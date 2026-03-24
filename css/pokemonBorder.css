@@ -1,0 +1,156 @@
+:root {
+  --border-color: #283030;
+}
+
+.pkbd {
+  contain: layout style;
+  cursor: pointer;
+
+  &:hover {
+    transform: translate(2px, -2px);
+    box-shadow: 6px 8px 0 var(--border-color);
+  }
+  position: relative;
+  background-color: white;
+  border: 2px solid var(--border-color);
+  width: fit-content;
+  padding: 0.2em 0.4em;
+  border-top: 4px solid var(--border-color);
+  /* 3. Draw the white dots using the background trick */
+  background-image:
+   /* Top Left */
+    linear-gradient(var(--border-color), var(--border-color)),
+    /* Bottom Left */ linear-gradient(var(--border-color), var(--border-color)),
+    /* Bottom Right */ linear-gradient(var(--border-color), var(--border-color));
+
+  /* Set the size of your dots */
+  background-size: 2px 2px;
+  background-repeat: no-repeat;
+
+  /* Pin them to the extreme corners of this new stretched box */
+  background-position:
+    0px 0px,
+    /* Top Right */ 0px 100%,
+    /* Bottom Left */ 100% 100%;
+}
+
+/* White middle layer */
+.pkbd::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  border: 2px solid white;
+
+  /* 2. Force it to sit on top of everything */
+  z-index: 10;
+
+  /* Prevent this invisible box from blocking mouse clicks */
+  pointer-events: none;
+
+  background-image:
+    linear-gradient(white, white), linear-gradient(white, white),
+    linear-gradient(white, white), linear-gradient(white, white);
+
+  /* Pin them to the extreme corners of this new stretched box */
+  background-position:
+    0px 2px,
+    /* Top Right */ 0px 100%,
+    /* Bottom Left */ 100% 100%,
+    100% 2px; /* Bottom Right */
+
+  background-size: 2px 2px;
+  background-repeat: no-repeat;
+}
+
+/* Outer gray layer */
+.pkbd::after {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: -6px;
+  right: -6px;
+  bottom: -8px;
+  z-index: 11;
+
+  /* Prevent this invisible box from blocking mouse clicks */
+  pointer-events: none;
+
+  /* Replace border with backgrounds so corner dots appear on same layer */
+  background-image:
+    linear-gradient(var(--border-color), var(--border-color)),
+    linear-gradient(var(--border-color), var(--border-color)),
+    linear-gradient(var(--border-color), var(--border-color)),
+    linear-gradient(var(--border-color), var(--border-color)),
+    /* top left start*/ linear-gradient(white, white),
+    linear-gradient(white, white),
+    linear-gradient(white, white),
+    /* top left end*/ /* top right start*/ linear-gradient(white, white),
+    linear-gradient(white, white),
+    linear-gradient(white, white),
+    /* top right end*/ /* bottom left start*/ linear-gradient(white, white),
+    linear-gradient(white, white),
+    linear-gradient(white, white),
+    /* bottom left end*/ /* bottom right start*/ linear-gradient(white, white),
+    linear-gradient(white, white),
+    linear-gradient(white, white),
+    /* bottom right end*/ /* Border lines */
+    linear-gradient(to right, var(--border-color), var(--border-color)),
+    /* Top border */
+    linear-gradient(to right, var(--border-color), var(--border-color)),
+    /* Bottom border */
+    linear-gradient(to bottom, var(--border-color), var(--border-color)),
+    /* Left border */
+    linear-gradient(to bottom, var(--border-color), var(--border-color)); /* Right border */
+
+  background-size:
+    /* Corner dots size */
+    2px 2px,
+    2px 2px,
+    2px 2px,
+    2px 2px,
+    /* top left start*/ 2px 2px,
+    2px 2px,
+    2px 2px,
+    /* top left end*/ /* top right start*/ 2px 2px,
+    2px 2px,
+    2px 2px,
+    /* top right end*/ /* bottom left start*/ 2px 2px,
+    2px 2px,
+    2px 2px,
+    /* bottom left end*/ /* bottom right start*/ 2px 2px,
+    2px 2px,
+    2px 2px,
+    /* bottom right end*/ /* Border sizes */ 100% 2px,
+    /* Top border */ 100% 4px,
+    /* Bottom border (thicker) */ 2px 100%,
+    /* Left border */ 2px 100%; /* Right border */
+
+  background-position:
+    /* Corner dots positions */
+    2px 2px,
+    /* Top-left */ calc(100% - 2px) 2px,
+    /* Top-right */ 2px calc(100% - 4px),
+    /* Bottom-left */ calc(100% - 2px) calc(100% - 4px),
+    /* Bottom-right */ /* top left start*/ 0px 0px,
+    0px 2px,
+    2px 0px,
+    /* top left end*/ /* top right start*/ 100% 0px,
+    100% 2px,
+    calc(100% - 2px) 0px,
+    /* top right end*/ /* bottom left start*/ 0px 100%,
+    2px 100%,
+    0px calc(100% - 2px),
+    /* bottom left end*/ /* bottom right start*/ 100% 100%,
+    100% calc(100% - 2px),
+    calc(100% - 2px) 100%,
+    /* bottom right end*/ /* Border positions */ 0 0,
+    /* Top border */ 0 100%,
+    /* Bottom border */ 0 0,
+    /* Left border */ 100% 0; /* Right border */
+
+  background-repeat: no-repeat;
+  /*#####*/
+}

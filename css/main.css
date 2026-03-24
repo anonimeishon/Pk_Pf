@@ -1,0 +1,35 @@
+@font-face {
+  font-family: 'Pokemon';
+  src: url('../assets/pokemon-font.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+html {
+  font-size: 20px;
+}
+body {
+  font-family: Pokemon;
+  font-size: 1rem;
+  user-select: none;
+}
+.header {
+  display: flex;
+  gap: 1rem;
+}
+.tileset-preview::after {
+  content: 'Tileset Preview';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  color: red;
+  background-color: rgba(0, 0, 0, 0.5);
+  font-size: 1.5rem;
+}
+.main-canvas-container {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
