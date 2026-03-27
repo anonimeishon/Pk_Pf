@@ -16,7 +16,7 @@ const directions = {
 
 await sharedLoader.loadImage(
   'trainer',
-  `${ASSETS_BASE}sprites/pokemon_gen_1_trainer_sprite.png`,
+  `${ASSETS_BASE}sprites/pokemon_gen_1_trainer_sprite_long_hair.png`,
 );
 
 const debugScale = 4;
@@ -41,7 +41,7 @@ export class Player {
     this.direction = 'down'; // current facing direction
     this.footIndex = 0; // alternates 0/1 for walk cycle
     this.currentFrame = this.frames['down'].neutral;
-    this.sfxPlayer = new SfxPlayer(game.canvas);
+    this.sfxPlayer = new SfxPlayer();
     this.enableMovement = enableMovement;
   }
   _trainerSprite() {

@@ -49,3 +49,29 @@ body {
   justify-content: center;
   text-align: center;
 }
+
+/* Desktop: hide d-pad */
+.controls {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  html {
+    font-size: 14px;
+  }
+
+  .main-canvas-container {
+    margin-top: 0.5rem;
+    padding: 0 8px;
+  }
+
+  /* Hide keyboard instructions, show d-pad */
+  .info {
+    display: none;
+  }
+
+  .controls {
+    display: flex;
+    padding: 1rem 0;
+  }
+}

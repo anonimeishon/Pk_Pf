@@ -23,11 +23,6 @@ export class Portal {
    * @returns {void}
    */
   detectMove(player, game) {
-    console.log('🚀 ~ portal.js:26 ~ Portal ~ detectMove ~ player:', {
-      x: player.x,
-      y: player.y,
-    });
-
     const portal = this.portals[`${player.x},${player.y}`];
 
     if (portal) {

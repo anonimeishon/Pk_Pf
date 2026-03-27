@@ -1,0 +1,61 @@
+.arrowKeys {
+  border: 1px solid black;
+  width: 40%;
+  position: relative;
+  aspect-ratio: 1;
+}
+
+@media (max-width: 600px) {
+  .arrowKeys {
+    width: 180px;
+  }
+}
+:root {
+  --arrow-key-size: 30%;
+  --arrow-key-radius: 30%;
+  --arrow-key-hover-color: lightgray;
+}
+.arrowKey {
+  position: absolute;
+  width: var(--arrow-key-size);
+  aspect-ratio: 1;
+  border: solid black 1px;
+  &:hover {
+    background-color: var(--arrow-key-hover-color);
+  }
+}
+.arrowKeys .up {
+  border-top-left-radius: var(--arrow-key-radius);
+  border-top-right-radius: var(--arrow-key-radius);
+  top: 4.5%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-bottom: none;
+}
+
+.arrowKeys .down {
+  bottom: 4.5%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-top: none;
+  border-bottom-left-radius: var(--arrow-key-radius);
+  border-bottom-right-radius: var(--arrow-key-radius);
+}
+
+.arrowKeys .left {
+  top: 50%;
+  left: 4.5%;
+  transform: translateY(-50%);
+  border-right: none;
+  border-top-left-radius: var(--arrow-key-radius);
+  border-bottom-left-radius: var(--arrow-key-radius);
+}
+
+.arrowKeys .right {
+  top: 50%;
+  right: 4.5%;
+  transform: translateY(-50%);
+  border-left: none;
+  border-top-right-radius: var(--arrow-key-radius);
+  border-bottom-right-radius: var(--arrow-key-radius);
+}

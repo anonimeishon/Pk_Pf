@@ -7,7 +7,7 @@ const SOUNDS_PATH = `${ASSETS_BASE}sounds`;
  * @typedef {Object.<string, SoundEntry>} SoundMap
  */
 export class SoundPlayer {
-  constructor(anchorElement = window) {
+  constructor() {
     /** @type {SoundMap} */
     this.sounds = {};
     this.isPlaying = false;
@@ -25,12 +25,12 @@ export class SoundPlayer {
 
       // Only stop listening once the context is actually running
       if (this._audioCtx.state === 'running') {
-        anchorElement.removeEventListener('keydown', unlock);
-        anchorElement.removeEventListener('pointerdown', unlock);
+        window.removeEventListener('keydown', unlock);
+        window.removeEventListener('pointerdown', unlock);
       }
     };
-    anchorElement.addEventListener('keydown', unlock);
-    anchorElement.addEventListener('pointerdown', unlock);
+    window.addEventListener('keydown', unlock);
+    window.addEventListener('pointerdown', unlock);
   }
   /**
    * @param {string} name - name of the sound to load, must be the same name as the file, no extension.

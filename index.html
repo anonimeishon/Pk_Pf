@@ -2,11 +2,12 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=1920, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>pkbd</title>
     <link rel="stylesheet" href="css/pokemonBorder.css" />
     <link rel="stylesheet" href="css/main.css" />
     <link rel="stylesheet" href="css/canvas.css" />
+    <link rel="stylesheet" href="css/arrowKeys.css" />
     <script src="js/index.js" type="module"></script>
   </head>
   <body>
@@ -22,12 +23,24 @@
         height="432"
         tabindex="0"
       ></canvas>
+      <!-- <canvas id="debug-canvas" width="437" height="1240"></canvas> -->
     </main>
     <div class="game-instructions-container">
       <p class="pkbd sm game-instructions">
         Click on the game screen to interact and enable sound
       </p>
     </div>
-    <!-- <canvas id="debug-canvas" width="437" height="1240"></canvas> -->
+    <div class="info" id="info">
+      <p class="pkbd sm">Controls:</p>
+      <p class="pkbd sm">Arrow keys to move</p>
+    </div>
+    <div class="controls" id="controls">
+      <div id="arrowKeys" class="arrowKeys">
+        <div id="arrowKeyUp" class="arrowKey up"></div>
+        <div id="arrowKeyDown" class="arrowKey down"></div>
+        <div id="arrowKeyLeft" class="arrowKey left"></div>
+        <div id="arrowKeyRight" class="arrowKey right"></div>
+      </div>
+    </div>
   </body>
 </html>
