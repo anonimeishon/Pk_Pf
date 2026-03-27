@@ -20,8 +20,22 @@
   width: var(--arrow-key-size);
   aspect-ratio: 1;
   border: solid black 1px;
-  &:hover {
+  touch-action: none;
+  &:active,
+  &.pressed {
     background-color: var(--arrow-key-hover-color);
+  }
+  /* Desktop hover: only for true pointer devices */
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background-color: var(--arrow-key-hover-color);
+    }
+  }
+  /* Touch devices: suppress transitions to avoid fade-out flicker on release */
+  @media (hover: none), (pointer: coarse) {
+    & {
+      transition: none;
+    }
   }
 }
 .arrowKeys .up {

@@ -23,46 +23,25 @@ export class InputHandler {
       ArrowRight: arrowKeyRight,
     };
 
-    this.virtualArrowKeys.ArrowUp.addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      if (this.keys.indexOf('ArrowUp') === -1) this.keys.push('ArrowUp');
-      return;
-    });
-    this.virtualArrowKeys.ArrowUp.addEventListener('touchend', (e) => {
-      e.preventDefault();
-      this.keys.splice(this.keys.indexOf('ArrowUp'), 1);
-      return;
-    });
-    this.virtualArrowKeys.ArrowDown.addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      if (this.keys.indexOf('ArrowDown') === -1) this.keys.push('ArrowDown');
-      return;
-    });
-    this.virtualArrowKeys.ArrowDown.addEventListener('touchend', (e) => {
-      e.preventDefault();
-      this.keys.splice(this.keys.indexOf('ArrowDown'), 1);
-      return;
-    });
-    this.virtualArrowKeys.ArrowLeft.addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      if (this.keys.indexOf('ArrowLeft') === -1) this.keys.push('ArrowLeft');
-      return;
-    });
-    this.virtualArrowKeys.ArrowLeft.addEventListener('touchend', (e) => {
-      e.preventDefault();
-      this.keys.splice(this.keys.indexOf('ArrowLeft'), 1);
-      return;
-    });
-    this.virtualArrowKeys.ArrowRight.addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      if (this.keys.indexOf('ArrowRight') === -1) this.keys.push('ArrowRight');
-      return;
-    });
-    this.virtualArrowKeys.ArrowRight.addEventListener('touchend', (e) => {
-      e.preventDefault();
-      this.keys.splice(this.keys.indexOf('ArrowRight'), 1);
-      return;
-    });
+    const onTouchEnd = (key) => {
+      return (e) => {
+        e.preventDefault();
+        e.currentTarget.classList.remove('pressed');
+
+        const idx = this.keys.indexOf(key);
+        if (idx !== -1) this.keys.splice(idx, 1);
+      };
+    };
+
+    for (const [key, el] of Object.entries(this.virtualArrowKeys)) {
+      el.addEventListener('touchstart', (e) => {
+        el.classList.add('pressed');
+
+        if (this.keys.indexOf(key) === -1) this.keys.push(key);
+      });
+      el.addEventListener('touchend', onTouchEnd(key));
+      el.addEventListener('touchcancel', onTouchEnd(key));
+    }
     canvas.addEventListener('keydown', (e) => {
       if (ALLOWED_KEYS.includes(e.key)) {
         e.preventDefault(); // stop arrow keys from scrolling the page

@@ -45,6 +45,7 @@ export class MainRoomMap extends TileMap {
           y: TRAINER_SPRITE_SIZE,
         },
       ]),
+      'mainRoom',
     );
   }
 }

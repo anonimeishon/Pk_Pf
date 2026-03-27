@@ -6,6 +6,7 @@ import { sharedLoader } from '../utils/assetLoader.js';
 import { SfxPlayer } from './sounds/sfxPlayer.js';
 import { ASSETS_BASE } from '../constants/assets.js';
 import { TRAINER_MOVE_STEP } from '../constants/movement.js';
+import { STATE_BACKUP_THRESHOLD } from '../constants/state.js';
 
 const directions = {
   ArrowUp: { dx: 0, dy: -TRAINER_MOVE_STEP, dir: 'up' },
@@ -21,13 +22,13 @@ await sharedLoader.loadImage(
 
 const debugScale = 4;
 export class Player {
-  constructor(game, enableMovement = false) {
+  constructor(game, enableMovement = false, x = null, y = null) {
     this.game = game;
     this.width = TRAINER_SPRITE_SIZE;
     this.height = TRAINER_SPRITE_SIZE;
     // World-space starting position (tile-aligned)
-    this.x = this.game.width - TRAINER_SPRITE_SIZE * 2;
-    this.y = TRAINER_SPRITE_SIZE;
+    this.x = x ? x : this.game.width - TRAINER_SPRITE_SIZE * 2;
+    this.y = y ? y : TRAINER_SPRITE_SIZE;
     this.sprite = this._trainerSprite();
 
     // Tile-based movement properties
@@ -43,6 +44,7 @@ export class Player {
     this.currentFrame = this.frames['down'].neutral;
     this.sfxPlayer = new SfxPlayer();
     this.enableMovement = enableMovement;
+    this.stepsSinceBackup = 0;
   }
   _trainerSprite() {
     return sharedLoader.get('trainer');
@@ -96,6 +98,14 @@ export class Player {
 
       this.game.map?.portal.detectMove(this, this.game);
       this.isMoving = false;
+
+      if (this.stepsSinceBackup >= STATE_BACKUP_THRESHOLD) {
+        this.game.state.saveStateBackup(this, this.game.map.currentMapKey);
+
+        this.stepsSinceBackup = 0;
+      } else {
+        this.stepsSinceBackup++;
+      }
       // Only alternate foot for directions that have two walk frames
       if (this.direction === 'up' || this.direction === 'down') {
         this.footIndex = 1 - this.footIndex;

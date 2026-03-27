@@ -1,5 +1,3 @@
-import { SCALED_TILE_SIZE, TILE_SCALING_AMOUNT } from '../constants/tileset.js';
-
 /**
  * TileMap handles rendering the tilemap and collision detection based on a 2D array of tile IDs.
  * @param {number[][]} mapData - 2D array of tile IDs, indexed as [row][col]
@@ -10,6 +8,7 @@ import { SCALED_TILE_SIZE, TILE_SCALING_AMOUNT } from '../constants/tileset.js';
  * @param {number} tileSize - Original tile size in the tileset image in pixels.
  * @param {HTMLImageElement} tilesetImage - The tileset image to draw tiles from.
  * @param {Portal} portal - Portal instance for map transitions.
+ * @param {string} currentMapKey - Key of the current map, used for state management.
  */
 export class TileMap {
   constructor(
@@ -21,6 +20,7 @@ export class TileMap {
     tileSize,
     tilesetImage,
     portal,
+    currentMapKey,
   ) {
     this.mapData = mapData; // 2D array [row][col] of tile IDs
     this.rows = mapData.length;
@@ -32,6 +32,7 @@ export class TileMap {
     this.tileSize = tileSize;
     this.tileScaling = tileScaling;
     this.portal = portal;
+    this.currentMapKey = currentMapKey;
   }
 
   // Returns true if the world-space bounding box overlaps any solid tile.

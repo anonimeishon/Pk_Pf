@@ -45,6 +45,7 @@ export class TownMap extends TileMap {
           y: TRAINER_SPRITE_SIZE,
         },
       ]),
+      'town',
     );
   }
 }

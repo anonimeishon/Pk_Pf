@@ -4,6 +4,7 @@
 import { InputHandler } from '../handlers/inputHandler.js';
 import { Player } from './player.js';
 import { maps } from '../maps/index.js';
+import { State } from './state.js';
 
 const TRANSITION_STEPS = [0.2, 0.6, 1]; // alpha at each step
 const FRAMES_PER_STEP = 4; // game frames to hold each step
@@ -16,16 +17,23 @@ export class Game {
    * @param {TileMap} map
    */
   constructor(width, height, canvas, map) {
+    this.state = new State({ x: null, y: null }, null);
+    this.state.restoreStateBackup(); // attempt to restore from backup (if any)
+
     this.width = width;
     this.height = height;
     this.canvas = canvas;
-    this.map = map;
-    this.player = new Player(this, true);
+    this.map = this.state.mapKey ? new maps[this.state.mapKey]() : map; // restore from saved key if available
+    this.player = new Player(
+      this,
+      true,
+      this.state.player.x || null,
+      this.state.player.y || null,
+    );
     this.input = new InputHandler(canvas);
     this.fps = 30;
     this.frameInterval = 1000 / this.fps;
     this.lastTime = 0;
-
     // Transition state
     this._transition = null; // null when idle
   }
@@ -72,6 +80,8 @@ export class Game {
         this.loadMap(t.mapKey);
         this.player.x = t.targetX;
         this.player.y = t.targetY;
+        this.state.updateMapKey(t.mapKey);
+        this.state.updatePlayer(this.player);
         t.phase = 'fadeIn';
         t.stepIndex = TRANSITION_STEPS.length - 1;
       }
@@ -110,10 +120,11 @@ export class Game {
   loadMap(mapKey) {
     if (!maps[mapKey]) throw new Error(`Unknown map: "${mapKey}"`);
     this.map = new maps[mapKey]();
+    this.state.updatePlayer(this.player);
+    this.state.updateMapKey(mapKey);
   }
 
   /**
-   *
    * @param {CanvasRenderingContext2D} context
    */
   draw(context) {
