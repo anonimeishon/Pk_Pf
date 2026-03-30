@@ -26,6 +26,7 @@ export class Game {
       true,
       this.state.player.x || null,
       this.state.player.y || null,
+      this.state.player.direction,
     );
     this.input = new InputHandler(canvas);
     this.fps = 30;

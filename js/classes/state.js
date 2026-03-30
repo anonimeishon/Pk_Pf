@@ -31,11 +31,6 @@ export class State {
   restoreStateBackup() {
     const savedState = window.localStorage.getItem('state');
 
-    console.log(
-      '🚀 ~ state.js:35 ~ State ~ restoreStateBackup ~ savedState:',
-      savedState,
-    );
-
     if (savedState) {
       let parsedState = null;
       try {
@@ -43,11 +38,6 @@ export class State {
       } catch (err) {
         console.error('Failed to parse saved state:', err);
       }
-
-      console.log(
-        '🚀 ~ state.js:48 ~ State ~ restoreStateBackup ~ parsedState:',
-        parsedState,
-      );
 
       this.player.x = parsedState?.player?.x ?? null;
       this.player.y = parsedState?.player?.y ?? null;

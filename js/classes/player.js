@@ -22,7 +22,13 @@ await sharedLoader.loadImage(
 
 const debugScale = 4;
 export class Player {
-  constructor(game, enableMovement = false, x = null, y = null) {
+  constructor(
+    game,
+    enableMovement = false,
+    x = null,
+    y = null,
+    direction = 'down',
+  ) {
     this.game = game;
     this.width = TRAINER_SPRITE_SIZE;
     this.height = TRAINER_SPRITE_SIZE;
@@ -39,9 +45,9 @@ export class Player {
     this.targetY = this.y;
     this.moveStartTime = 0;
     this.moveDuration = TRAINER_MOVEMENT_SPEED_MS;
-    this.direction = 'down'; // current facing direction
+    this.direction = direction; // current facing direction
     this.footIndex = 0; // alternates 0/1 for walk cycle
-    this.currentFrame = this.frames['down'].neutral;
+    this.currentFrame = this.frames[direction].neutral;
     this.sfxPlayer = new SfxPlayer();
     this.enableMovement = enableMovement;
     this._updateFacing();

@@ -6,9 +6,9 @@ export class EventTrigger {
    * @param {string} options.name - unique identifier within the map
    * @param {{ x: number, y: number }[]} options.positions - world-space positions that activate this trigger
    * @param {'dialog'} options.action
-   * @param {string[][]} options.dialog - pages of lines: [['line1', 'line2'], ['next page line1']]
+   * @param {string} options.dialog - dialog text
    */
-  constructor({ name, positions, action, dialog = [] }) {
+  constructor({ name, positions, action, dialog = '' }) {
     this.name = name;
     this.action = action;
     this.dialog = new Dialog(dialog);

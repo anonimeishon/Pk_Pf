@@ -54,11 +54,8 @@ export class MainRoomMap extends TileMap {
             { x: TRAINER_SPRITE_SIZE * 0, y: TRAINER_SPRITE_SIZE * 1 },
           ],
           action: 'dialog',
-          dialog: [
-            [
-              'My computer... My computer... My computer... My computer... My computer... My computer... My computer... My computer... ',
-            ],
-          ],
+          dialog:
+            'This is my computer... it is the best computer in town... My computer... My computer... My computer... My computer... My computer... My computer... My computer... My computer...',
         }),
       ],
     );
