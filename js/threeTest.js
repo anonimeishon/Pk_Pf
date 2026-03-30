@@ -44,9 +44,16 @@ export const testThree = ({ secondaryCanvas }) => {
   texture.magFilter = THREE.NearestFilter;
   texture.flipY = true;
 
-  // CRT shader — barrel distortion + scanlines + vignette
+  // Game Boy Color LCD pixel grid shader.
+  // Each GBC pixel is rendered as a near-full square with a thin dark border,
+  // matching the look of the actual LCD panel — no circles.
   const crtMaterial = new THREE.ShaderMaterial({
-    uniforms: { map: { value: texture } },
+    uniforms: {
+      map: { value: texture },
+      resolution: { value: new THREE.Vector2(160, 144) }, // GBC native resolution
+      gapSize: { value: 0.1 }, // fraction of a cell used for the border (0.08–0.15)
+      gapBrightness: { value: 0.15 }, // gap colour as a fraction of pixel brightness
+    },
     vertexShader: /* glsl */ `
       varying vec2 vUv;
       void main() {
@@ -56,33 +63,44 @@ export const testThree = ({ secondaryCanvas }) => {
     `,
     fragmentShader: /* glsl */ `
       uniform sampler2D map;
+      uniform vec2 resolution;
+      uniform float gapSize;
+      uniform float gapBrightness;
       varying vec2 vUv;
 
-      vec2 crtDistort(vec2 uv) {
-        uv = uv * 2.0 - 1.0;
-        float r2 = dot(uv, uv);
-        uv *= 1.0 + 0.12 * r2;       // barrel curve strength — increase for more bend
-        return uv * 0.5 + 0.5;
-      }
-
       void main() {
-        vec2 uv = crtDistort(vUv);
+        vec2 cell = vUv * resolution;
+        vec2 cellIndex = floor(cell);
+        vec2 cellPos = fract(cell); // 0→1 within each pixel cell
 
-        // Discard pixels outside the curved screen edge
-        if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) {
-          gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-          return;
-        }
+        // How many screen pixels does one cell span?
+        // When < ~2px the grid becomes sub-pixel noise — fade it out.
+        vec2 cellSizePx = vec2(dFdx(cell.x), dFdy(cell.y));
+        float cellPx = max(abs(cellSizePx.x), abs(cellSizePx.y)); // reciprocal = px per cell
+        // gridStrength → 1 when cell is ≥ 4 screen-px wide, 0 when ≤ 1.5 px wide
+        float gridStrength = smoothstep(1.5, 4.0, 1.0 / cellPx);
 
-        vec4 col = texture2D(map, uv);
+        // Sample the colour at the centre of this pixel cell
+        vec2 sampleUv = (cellIndex + 0.5) / resolution;
+        vec4 col = texture2D(map, sampleUv);
 
-        // Scanlines
-        float scan = sin(uv.y * 144.0 * 3.14159) * 0.5 + 0.5;
-        col.rgb *= mix(0.75, 1.0, scan);
+        // Square pixel mask with anti-aliased edges.
+        // Only computed when the grid is actually visible (avoids Moiré when zoomed out).
+        float hw = gapSize * 0.5;
+        float ex = fwidth(cellPos.x);
+        float ey = fwidth(cellPos.y);
+        float maskX = smoothstep(hw - ex, hw + ex, cellPos.x) *
+                      smoothstep(hw - ex, hw + ex, 1.0 - cellPos.x);
+        float maskY = smoothstep(hw - ey, hw + ey, cellPos.y) *
+                      smoothstep(hw - ey, hw + ey, 1.0 - cellPos.y);
+        float mask = mix(1.0, maskX * maskY, gridStrength);
 
-        // Vignette
+        // Border shows a very dark tint of the pixel colour (LCD bleed)
+        col.rgb = mix(col.rgb * gapBrightness, col.rgb, mask);
+
+        // Subtle vignette at screen edges
         vec2 vig = vUv * (1.0 - vUv.yx);
-        col.rgb *= pow(vig.x * vig.y * 16.0, 0.2);
+        col.rgb *= pow(clamp(vig.x * vig.y * 15.0, 0.0, 1.0), 0.18);
 
         gl_FragColor = col;
       }
