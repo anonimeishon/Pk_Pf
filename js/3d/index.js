@@ -29,6 +29,9 @@ scene.add(ambientLight);
 // Particles
 scene.add(particles);
 
+const motionBaseline = { x: 0, y: 0 };
+let hasMotionBaseline = false;
+
 const dotMatrixMaterial = dotMatrixMaterialBuilder(canvasTexture);
 export const renderScreen = ({ renderCanvas }) => {
   // 📦 Load model
@@ -42,7 +45,7 @@ export const renderScreen = ({ renderCanvas }) => {
     model.position.set(0, 0, 0);
 
     model.traverse((child) => {
-      console.log('🚀 ~ index.js:45 ~ renderScreen ~ child:', child);
+      console.log('🚀 ~ index.js:48 ~ renderScreen ~ child:', child);
 
       if (child.isMesh && child.parent?.name === 'Screen') {
         // Hide the original atlas-mapped mesh
@@ -81,14 +84,32 @@ export const renderScreen = ({ renderCanvas }) => {
 
     const animationState = getCameraAnimationState();
 
+    // Calibrate once so gravity bias does not keep the camera permanently offset.
+    if (
+      !hasMotionBaseline &&
+      (Math.abs(motion.x) > 0.3 || Math.abs(motion.y) > 0.3)
+    ) {
+      motionBaseline.x = motion.x;
+      motionBaseline.y = motion.y;
+      hasMotionBaseline = true;
+    }
+
     // Keep parallax as an offset around the animated base camera pose.
-    const parallaxStrength = 0.5;
+    const mouseParallaxStrength = 0.5;
+    const phoneParallaxStrength = 0.7;
+    const motionXNorm = hasMotionBaseline
+      ? THREE.MathUtils.clamp((motion.x - motionBaseline.x) / 9.81, -1, 1)
+      : 0;
+    const motionYNorm = hasMotionBaseline
+      ? THREE.MathUtils.clamp((motion.y - motionBaseline.y) / 9.81, -1, 1)
+      : 0;
+
     const offsetX = animationState.isAnimating
       ? 0
-      : cursor.x * parallaxStrength;
+      : cursor.x * mouseParallaxStrength + motionXNorm * phoneParallaxStrength;
     const offsetY = animationState.isAnimating
       ? 0
-      : -cursor.y * parallaxStrength;
+      : -cursor.y * mouseParallaxStrength - motionYNorm * phoneParallaxStrength;
     const targetX = cameraBasePosition.x + offsetX;
     const targetY = cameraBasePosition.y + offsetY;
     const follow = animationState.isAnimating ? 1 : 0.08;

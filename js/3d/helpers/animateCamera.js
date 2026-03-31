@@ -9,6 +9,9 @@ export const animateCamera = ({
   finishCameraAnimation,
   getCameraAnimationState,
 }) => {
+  const prevDamping = controls.enableDamping;
+  controls.enableDamping = false;
+
   const animationId = beginCameraAnimation();
   const startPos = cameraBasePosition.clone();
   const startTarget = cameraTarget.clone();
@@ -16,7 +19,10 @@ export const animateCamera = ({
   const easeInOut = (t) => t * t * (3 - 2 * t);
 
   const step = (now) => {
-    if (animationId !== getCameraAnimationState().activeAnimationId) return;
+    if (animationId !== getCameraAnimationState().activeAnimationId) {
+      controls.enableDamping = prevDamping;
+      return;
+    }
 
     const tRaw = Math.min((now - startTime) / duration, 1);
     const t = easeInOut(tRaw);
@@ -29,6 +35,8 @@ export const animateCamera = ({
     if (tRaw >= 1) {
       cameraBasePosition.copy(toPosition);
       cameraTarget.copy(toTarget);
+      controls.target.copy(toTarget);
+      controls.enableDamping = prevDamping;
       finishCameraAnimation(animationId);
       return;
     }
