@@ -62,7 +62,7 @@ export const renderScreen = ({ renderCanvas }) => {
       // }
 
       if (child.isMesh && child.parent?.name === 'Case') {
-        console.log(child);
+        // console.log(child);
         child.material.color = new THREE.Color(0xff00);
         // child.material.metalness = 0.5
         // child.material = new THREE.MeshStandardMaterial({
@@ -74,7 +74,8 @@ export const renderScreen = ({ renderCanvas }) => {
         // });
       }
       if (child.isMesh && child.parent?.name === 'Plastic') {
-        console.log(child);
+        // IMPORTANT buttons are in here
+        // console.log(child);
         // child.material = new THREE.MeshStandardMaterial({
         //   color: 0xffffff,
         //   roughness: 0.3,
@@ -83,7 +84,7 @@ export const renderScreen = ({ renderCanvas }) => {
         //   opacity: 0.9,
         // });
       }
-      console.log('================================');
+      // console.log('================================');
       if (child.isMesh && child.parent?.name === 'Screen') {
         // Hide the original atlas-mapped mesh
         // child.visible = false;
