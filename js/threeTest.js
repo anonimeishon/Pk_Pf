@@ -2,6 +2,9 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { CANVAS_HEIGHT, CANVAS_WIDTH } from './constants/game.js';
+import { INITIAL_CAMERA_POSITION } from './constants/three.js';
+
+// 📷 Camera
 
 export const camera = new THREE.PerspectiveCamera(
   60,
@@ -9,14 +12,25 @@ export const camera = new THREE.PerspectiveCamera(
   0.1,
   10,
 );
+camera.position.set(
+  INITIAL_CAMERA_POSITION.x,
+  INITIAL_CAMERA_POSITION.y,
+  INITIAL_CAMERA_POSITION.z,
+);
+const cameraBasePosition = new THREE.Vector3(
+  INITIAL_CAMERA_POSITION.x,
+  INITIAL_CAMERA_POSITION.y,
+  INITIAL_CAMERA_POSITION.z,
+);
+const cameraTarget = new THREE.Vector3(0, 0, 0);
+const cursor = { x: 0, y: 0 };
+let isCameraAnimating = false;
+let activeCameraAnimationId = 0;
 
 // 🎬 Scene
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x000000);
 
-// 📷 Camera
-camera.position.set(-0.8, 0.4, 1.5);
-camera.lookAt(0, 0, 0);
 // 🖥️ Renderer
 const renderer = new THREE.WebGLRenderer({
   canvas: secondaryCanvas,
@@ -31,6 +45,15 @@ renderer.setSize(
 
 // 🎮 Controls
 export let controls = new OrbitControls(camera, renderer.domElement);
+controls.enablePan = false;
+controls.enableZoom = false;
+controls.enableRotate = false;
+controls.enableDamping = true;
+controls.dampingFactor = 0.05;
+controls.maxZoom = 2;
+controls.minZoom = 0.5;
+controls.target.copy(cameraTarget);
+controls.update();
 
 // 💡 Lights
 const light = new THREE.DirectionalLight(0xffffff, 1);
@@ -38,6 +61,32 @@ light.position.set(5, 5, 5);
 scene.add(light);
 
 scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+
+// const objectsDistance = 4;
+const particlesCount = 200;
+const positions = new Float32Array(particlesCount * 3);
+const particlesGeometry = new THREE.BufferGeometry();
+
+for (let i = 0; i < particlesCount; i++) {
+  positions[i * 3 + 0] = (Math.random() - 0.5) * 8;
+  positions[i * 3 + 1] = (Math.random() - 0.5) * 8;
+  positions[i * 3 + 2] = Math.random() * -5;
+}
+particlesGeometry.setAttribute(
+  'position',
+  new THREE.BufferAttribute(positions, 3),
+);
+const particlesMaterial = new THREE.PointsMaterial({
+  color: 0xffeded,
+  sizeAttenuation: true,
+  size: 0.01,
+  //   depthWrite: false,
+  //   blending: THREE.AdditiveBlending,
+});
+
+const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+scene.add(particles);
+
 export const testThree = ({ secondaryCanvas }) => {
   // 🎨 Canvas texture from the game's secondary canvas
   // secondaryCanvas.width = 160;
@@ -174,6 +223,19 @@ export const testThree = ({ secondaryCanvas }) => {
   function animate() {
     requestAnimationFrame(animate);
 
+    // Keep parallax as an offset around the animated base camera pose.
+    const parallaxStrength = 0.5;
+    const offsetX = isCameraAnimating ? 0 : cursor.x * parallaxStrength;
+    const offsetY = isCameraAnimating ? 0 : -cursor.y * parallaxStrength;
+    const targetX = cameraBasePosition.x + offsetX;
+    const targetY = cameraBasePosition.y + offsetY;
+    const follow = isCameraAnimating ? 1 : 0.08;
+
+    camera.position.x += (targetX - camera.position.x) * follow;
+    camera.position.y += (targetY - camera.position.y) * follow;
+    camera.position.z += (cameraBasePosition.z - camera.position.z) * follow;
+
+    controls.target.copy(cameraTarget);
     texture.needsUpdate = true;
     controls.update();
     renderer.render(scene, camera);
@@ -191,4 +253,57 @@ export const testThree = ({ secondaryCanvas }) => {
       false,
     );
   });
+};
+
+const mouseMoveHandler = (e) => {
+  const rect = secondaryCanvas.getBoundingClientRect();
+  cursor.x = (e.clientX - rect.left) / rect.width - 0.5;
+  cursor.y = (e.clientY - rect.top) / rect.height - 0.5;
+};
+secondaryCanvas.addEventListener('mousemove', mouseMoveHandler);
+
+export const animateCamera = ({
+  duration,
+  toPosition,
+  toTarget,
+  disableMovement,
+}) => {
+  const animationId = ++activeCameraAnimationId;
+  isCameraAnimating = true;
+
+  if (disableMovement) {
+    secondaryCanvas.removeEventListener('mousemove', mouseMoveHandler);
+    cursor.x = 0;
+    cursor.y = 0;
+  } else {
+    secondaryCanvas.addEventListener('mousemove', mouseMoveHandler);
+  }
+
+  const startPos = cameraBasePosition.clone();
+  const startTarget = cameraTarget.clone();
+  const startTime = performance.now();
+  const easeInOut = (t) => t * t * (3 - 2 * t);
+
+  const step = (now) => {
+    // Ignore stale RAF callbacks from previous camera transitions.
+    if (animationId !== activeCameraAnimationId) return;
+
+    const tRaw = Math.min((now - startTime) / duration, 1);
+    const t = easeInOut(tRaw);
+
+    cameraBasePosition.lerpVectors(startPos, toPosition, t);
+    cameraTarget.lerpVectors(startTarget, toTarget, t);
+    controls.target.copy(cameraTarget);
+    controls.update();
+
+    if (tRaw >= 1) {
+      cameraBasePosition.copy(toPosition);
+      cameraTarget.copy(toTarget);
+      isCameraAnimating = false;
+    }
+
+    if (tRaw < 1) requestAnimationFrame(step);
+  };
+
+  requestAnimationFrame(step);
 };
