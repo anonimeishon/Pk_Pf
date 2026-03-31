@@ -10,7 +10,7 @@ import {
 import { scene } from './scene.js';
 import { controls } from './controls/controls.js';
 import { cursor } from './helpers/cursorController.js';
-import { motion } from './helpers/phoneMotionController.js';
+import { motion, isMotionEnabled } from './helpers/phoneMotionController.js';
 import { renderer } from './renderer/renderer.js';
 import { directionalLight } from './light/directionalLight.js';
 import { ambientLight } from './light/ambientLight.js';
@@ -79,6 +79,7 @@ export const renderScreen = ({ renderCanvas }) => {
   });
 
   // 🔄 Animation loop
+  let prevIsAnimating = false;
   function animate() {
     requestAnimationFrame(animate);
 
@@ -103,15 +104,18 @@ export const renderScreen = ({ renderCanvas }) => {
       ? THREE.MathUtils.clamp((motion.y - motionBaseline.y) / 9.81, -1, 1)
       : 0;
 
+    const motionEnabled = isMotionEnabled();
     const offsetX = animationState.isAnimating
       ? 0
-      : (cursor.x + motionXNorm) * parallaxStrength;
+      : (cursor.x + (motionEnabled ? motionXNorm : 0)) * parallaxStrength;
     const offsetY = animationState.isAnimating
       ? 0
-      : -(cursor.y + motionYNorm) * parallaxStrength;
+      : -(cursor.y + (motionEnabled ? motionYNorm : 0)) * parallaxStrength;
     const targetX = cameraBasePosition.x + offsetX;
     const targetY = cameraBasePosition.y + offsetY;
     const follow = animationState.isAnimating ? 1 : 0.08;
+
+    prevIsAnimating = animationState.isAnimating;
 
     camera.position.x += (targetX - camera.position.x) * follow;
     camera.position.y += (targetY - camera.position.y) * follow;

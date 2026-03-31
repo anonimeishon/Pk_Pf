@@ -34,9 +34,13 @@ export const animateCamera = ({
 
     if (tRaw >= 1) {
       cameraBasePosition.copy(toPosition);
+
       cameraTarget.copy(toTarget);
+
       controls.target.copy(toTarget);
+
       controls.enableDamping = prevDamping;
+
       finishCameraAnimation(animationId);
       return;
     }

@@ -29,6 +29,7 @@ export const createPhoneMotion = ({ domElement }) => {
 
   return {
     motion,
+    isMotionEnabled: () => isEnabled,
     enablePhoneMotion,
     disablePhoneMotion,
   };
