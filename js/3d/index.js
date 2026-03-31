@@ -45,22 +45,44 @@ export const renderScreen = ({ renderCanvas }) => {
     model.position.set(0, 0, 0);
 
     model.traverse((child) => {
-      console.log('🚀 ~ index.js:48 ~ renderScreen ~ child.name:', child.name);
-      const children = child.children.map((child) => child.name);
-      if (children?.length) {
-        console.log(
-          '🚀 ~ index.js:52 ~ renderScreen ~ child.children.name:',
-          children,
-        );
-      }
+      // console.log('🚀 ~ index.js:48 ~ renderScreen ~ child.name:', child.name);
+      // const children = child.children.map((child) => child.name);
+      // if (children?.length) {
+      //   console.log(
+      //     '🚀 ~ index.js:52 ~ renderScreen ~ child.children.name:',
+      //     children,
+      //   );
+      // }
 
-      if (child?.parent?.name) {
-        console.log(
-          '🚀 ~ index.js:59 ~ renderScreen ~ parent.name:',
-          child?.parent?.name,
-        );
-      }
+      // if (child?.parent?.name) {
+      //   console.log(
+      //     '🚀 ~ index.js:59 ~ renderScreen ~ parent.name:',
+      //     child?.parent?.name,
+      //   );
+      // }
 
+      if (child.isMesh && child.parent?.name === 'Case') {
+        console.log(child);
+        child.material.color = new THREE.Color(0xff00);
+        // child.material.metalness = 0.5
+        // child.material = new THREE.MeshStandardMaterial({
+        //   color: 0x6C3BAA,
+        //   roughness: 0.2,
+        //   metalness: 0.5,
+        //   transparent: false,
+        //   opacity: 0.9,
+        // });
+      }
+      if (child.isMesh && child.parent?.name === 'Plastic') {
+        console.log(child);
+        // child.material = new THREE.MeshStandardMaterial({
+        //   color: 0xffffff,
+        //   roughness: 0.3,
+        //   metalness: 0.8,
+        //   transparent: true,
+        //   opacity: 0.9,
+        // });
+      }
       console.log('================================');
       if (child.isMesh && child.parent?.name === 'Screen') {
         // Hide the original atlas-mapped mesh
