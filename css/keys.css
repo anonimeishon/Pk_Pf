@@ -1,16 +1,13 @@
 .controls {
-  display: flex;
+  display: none;
+  /* display: flex; */
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
   margin: 1rem;
   display: none;
 }
-@media (max-width: 600px) {
-  .controls {
-    display: flex;
-  }
-}
+
 .arrowKeys {
   width: 40%;
   position: relative;

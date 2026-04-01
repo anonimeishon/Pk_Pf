@@ -19,4 +19,3 @@ export const setGameCamera = () => {
 
 window.resetCamera = resetCamera;
 window.setGameCamera = setGameCamera;
-console.log(resetCamera);

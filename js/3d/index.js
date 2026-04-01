@@ -16,6 +16,12 @@ import { directionalLight } from './light/directionalLight.js';
 import { ambientLight } from './light/ambientLight.js';
 import { canvasTexture } from './textures/canvasTexture.js';
 import { dotMatrixMaterialBuilder } from './materials/dotMatrix.js';
+import {
+  ACTION_ZONE_A,
+  ACTION_ZONE_B,
+  CONTROL_KEYS,
+  DPAD_ZONE,
+} from '../constants/threeControls.js';
 
 // 🎬 Scene
 scene.background = new THREE.Color(0x000000);
@@ -34,6 +40,146 @@ let hasMotionBaseline = false;
 
 const dotMatrixMaterial = dotMatrixMaterialBuilder(canvasTexture);
 export const renderScreen = ({ renderCanvas }) => {
+  const raycaster = new THREE.Raycaster();
+  const pointer = new THREE.Vector2();
+  const interactiveButtons = [];
+  let activeButton = null;
+
+  const dispatchGameKey = (type, key) => {
+    window.dispatchEvent(
+      new KeyboardEvent(type, { key, bubbles: true, cancelable: true }),
+    );
+  };
+
+  const meshNameToKey = (meshName = '') => {
+    const name = meshName.toLowerCase();
+
+    if (name.includes('up')) return CONTROL_KEYS.ArrowUp;
+    if (name.includes('down')) return CONTROL_KEYS.ArrowDown;
+    if (name.includes('left')) return CONTROL_KEYS.ArrowLeft;
+    if (name.includes('right')) return CONTROL_KEYS.ArrowRight;
+
+    // Map A button to Enter because the game already uses Enter as A.
+    if (name === 'a' || name.includes('button_a') || name.includes('buttona')) {
+      return CONTROL_KEYS.A;
+    }
+
+    if (name === 'b' || name.includes('button_b') || name.includes('buttonb')) {
+      return CONTROL_KEYS.B;
+    }
+
+    return null;
+  };
+
+  const isInBox = (value, min, max) => value >= min && value <= max;
+  const isNear = (value, center, halfSize) =>
+    value >= center - halfSize && value <= center + halfSize;
+
+  const keyFromHitPosition = (intersection) => {
+    const object = intersection.object;
+    const geometry = object.geometry;
+
+    if (!geometry?.boundingBox) geometry?.computeBoundingBox();
+    const bounds = geometry?.boundingBox;
+    if (!bounds) return null;
+
+    const localPoint = object.worldToLocal(intersection.point.clone());
+    const width = bounds.max.x - bounds.min.x || 1;
+    const depth = bounds.max.z - bounds.min.z || 1;
+    const xN = (localPoint.x - bounds.min.x) / width;
+    const zN = (localPoint.z - bounds.min.z) / depth;
+
+    if (
+      isNear(xN, ACTION_ZONE_A.centerX, ACTION_ZONE_A.halfSize) &&
+      isNear(zN, ACTION_ZONE_A.centerZ, ACTION_ZONE_A.halfSize)
+    ) {
+      return CONTROL_KEYS.A;
+    }
+
+    if (
+      isNear(xN, ACTION_ZONE_B.centerX, ACTION_ZONE_B.halfSize) &&
+      isNear(zN, ACTION_ZONE_B.centerZ, ACTION_ZONE_B.halfSize)
+    ) {
+      return CONTROL_KEYS.B;
+    }
+
+    const dx = xN - DPAD_ZONE.centerX;
+    const dz = zN - DPAD_ZONE.centerZ;
+
+    const inDpadBounds =
+      isInBox(xN, DPAD_ZONE.minX, DPAD_ZONE.maxX) &&
+      isInBox(zN, DPAD_ZONE.minZ, DPAD_ZONE.maxZ);
+    const outsideDeadZone =
+      Math.abs(dx) > DPAD_ZONE.deadZone || Math.abs(dz) > DPAD_ZONE.deadZone;
+
+    if (inDpadBounds && outsideDeadZone) {
+      if (Math.abs(dx) > Math.abs(dz)) {
+        return dx > 0 ? CONTROL_KEYS.ArrowRight : CONTROL_KEYS.ArrowLeft;
+      }
+      return dz > 0 ? CONTROL_KEYS.ArrowUp : CONTROL_KEYS.ArrowDown;
+    }
+
+    console.log('[3d-buttons] Unmapped hit zone', {
+      name: object.name,
+      xN: Number(xN.toFixed(3)),
+      zN: Number(zN.toFixed(3)),
+      localX: Number(localPoint.x.toFixed(3)),
+      localY: Number(localPoint.y.toFixed(3)),
+      localZ: Number(localPoint.z.toFixed(3)),
+      uvX: Number((intersection.uv?.x ?? 0).toFixed(3)),
+      uvY: Number((intersection.uv?.y ?? 0).toFixed(3)),
+    });
+
+    return null;
+  };
+
+  const updatePointerFromEvent = (event) => {
+    const rect = renderer.domElement.getBoundingClientRect();
+    pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+  };
+
+  const getPressedButton = (event) => {
+    if (!interactiveButtons.length) return null;
+
+    updatePointerFromEvent(event);
+    raycaster.setFromCamera(pointer, camera);
+    const hits = raycaster.intersectObjects(interactiveButtons, true);
+    return hits[0] ?? null;
+  };
+
+  const onPointerDown = (event) => {
+    const intersection = getPressedButton(event);
+    if (!intersection) return;
+
+    const keyByName = meshNameToKey(intersection.object.name);
+    const key = keyByName ?? keyFromHitPosition(intersection);
+    if (!key) {
+      return;
+    }
+
+    // B exists physically, but game logic currently only uses Enter + arrows.
+    if (key === CONTROL_KEYS.B) return;
+
+    activeButton = { key, mesh: intersection.object };
+    dispatchGameKey('keydown', key);
+    event.preventDefault();
+  };
+
+  const onPointerUp = (event) => {
+    if (!activeButton) return;
+
+    dispatchGameKey('keyup', activeButton.key);
+    activeButton = null;
+    event.preventDefault();
+  };
+
+  renderer.domElement.addEventListener('pointerdown', onPointerDown, {
+    passive: false,
+  });
+  window.addEventListener('pointerup', onPointerUp, { passive: false });
+  window.addEventListener('pointercancel', onPointerUp, { passive: false });
+
   // 📦 Load model
   const loader = new GLTFLoader();
 
@@ -45,33 +191,28 @@ export const renderScreen = ({ renderCanvas }) => {
     model.position.set(0, 0, 0);
 
     model.traverse((child) => {
-      // console.log('🚀 ~ index.js:48 ~ renderScreen ~ child.name:', child.name);
+      // console.log('🚀 ~ index.js:194 ~ renderScreen ~ child.name:', child.name);
       // const children = child.children.map((child) => child.name);
       // if (children?.length) {
       //   console.log(
-      //     '🚀 ~ index.js:52 ~ renderScreen ~ child.children.name:',
+      //     '🚀 ~ index.js:198 ~ renderScreen ~ child.children.name:',
       //     children,
       //   );
       // }
 
       // if (child?.parent?.name) {
       //   console.log(
-      //     '🚀 ~ index.js:59 ~ renderScreen ~ parent.name:',
+      //     '🚀 ~ index.js:205 ~ renderScreen ~ parent.name:',
       //     child?.parent?.name,
       //   );
       // }
 
       if (child.isMesh && child.parent?.name === 'Case') {
-        // console.log(child);
-        child.material.color = new THREE.Color(0xff00);
-        // child.material.metalness = 0.5
-        // child.material = new THREE.MeshStandardMaterial({
-        //   color: 0x6C3BAA,
-        //   roughness: 0.2,
-        //   metalness: 0.5,
-        //   transparent: false,
-        //   opacity: 0.9,
-        // });
+        const material = child.material;
+        // GLTF base color map can multiply the chosen color and shift it green.
+        if ('map' in material) material.map = null;
+        if ('color' in material) material.color = new THREE.Color(0x8953a9);
+        material.needsUpdate = true;
       }
       if (child.isMesh && child.parent?.name === 'Plastic') {
         // IMPORTANT buttons are in here
@@ -83,6 +224,8 @@ export const renderScreen = ({ renderCanvas }) => {
         //   transparent: true,
         //   opacity: 0.9,
         // });
+
+        interactiveButtons.push(child);
       }
       // console.log('================================');
       if (child.isMesh && child.parent?.name === 'Screen') {
@@ -140,7 +283,6 @@ export const renderScreen = ({ renderCanvas }) => {
   });
 
   // 🔄 Animation loop
-  let prevIsAnimating = false;
   function animate() {
     requestAnimationFrame(animate);
 
@@ -175,8 +317,6 @@ export const renderScreen = ({ renderCanvas }) => {
     const targetX = cameraBasePosition.x + offsetX;
     const targetY = cameraBasePosition.y + offsetY;
     const follow = animationState.isAnimating ? 1 : 0.08;
-
-    prevIsAnimating = animationState.isAnimating;
 
     camera.position.x += (targetX - camera.position.x) * follow;
     camera.position.y += (targetY - camera.position.y) * follow;

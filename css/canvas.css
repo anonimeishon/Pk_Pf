@@ -3,7 +3,8 @@
   max-width: 100%;
   height: auto;
   width: 100svw;
-  height: 60svh;
+  height: 100svh;
+  /* height: 93svh; */
   touch-action: auto !important;
 }
 
