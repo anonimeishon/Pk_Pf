@@ -23,17 +23,21 @@
     <script src="js/index.js" type="module"></script>
   </head>
   <body>
-    <header class="header">
-      <div class="pkbd pkbd-clickable" onclick="resetCamera()">
-        Reset Camera
-      </div>
-      <div class="pkbd pkbd-clickable" onclick="setGameCamera()">
-        Game Camera
-      </div>
-    </header>
     <main class="canvas-container">
       <canvas class="main-canvas" id="renderCanvas" tabindex="0"></canvas>
       <!-- <canvas id="debug-canvas" width="437" height="1240"></canvas> -->
+      <div class="camera-controls">
+        <button class="pkbd pkbd-clickable sm" onclick="resetCamera()">
+          Reset Camera
+        </button>
+        <button class="pkbd pkbd-clickable sm" onclick="setGameCamera()">
+          Game Camera
+        </button>
+      </div>
+      <div class="info" id="info">
+        <p class="pkbd sm">Controls:</p>
+        <p class="pkbd sm">Arrow keys to move</p>
+      </div>
     </main>
     <div class="canvas-container game-container">
       <canvas
@@ -49,10 +53,7 @@
         Click on the game screen to interact and enable sound
       </p>
     </div> -->
-    <div class="info" id="info">
-      <p class="pkbd sm">Controls:</p>
-      <p class="pkbd sm">Arrow keys to move</p>
-    </div>
+
     <div class="controls" id="controls">
       <div id="arrowKeys" class="arrowKeys">
         <div id="arrowKeyUp" class="arrowKey up"></div>

@@ -6,13 +6,13 @@
   height: 100svh;
   /* height: 93svh; */
   touch-action: auto !important;
+  position: relative;
 }
 
 .canvas-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 1rem;
 }
 .game-container {
   visibility: hidden;

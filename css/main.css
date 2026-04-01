@@ -11,17 +11,13 @@ html {
   user-scalable: no;
 }
 body {
-  font-family: Pokemon;
   font-size: 1rem;
   user-select: none;
   margin: 0 0;
   padding: 0;
   box-sizing: border-box;
 }
-.header {
-  display: flex;
-  gap: 1rem;
-}
+
 .tileset-preview::after {
   content: 'Tileset Preview';
   position: absolute;
@@ -43,7 +39,9 @@ body {
 .sm {
   font-size: 0.5rem;
 }
-
+.md {
+  font-size: 0.8rem;
+}
 .game-instructions {
   text-align: center;
 }
@@ -57,6 +55,22 @@ body {
 }
 
 /* Desktop: hide d-pad */
+.info {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+}
+.camera-controls {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1rem;
+}
 
 @media (max-width: 600px) {
   html {
@@ -71,5 +85,14 @@ body {
   /* Hide keyboard instructions, show d-pad */
   .info {
     display: none;
+  }
+  .camera-controls {
+    flex-direction: row;
+  }
+  .sm {
+    font-size: 0.7rem;
+  }
+  .md {
+    font-size: 1rem;
   }
 }
