@@ -6,11 +6,14 @@ const ALLOWED_KEYS = [
   'Enter',
 ];
 
+/**
+ * Singleton instance — initialised once by Game, then importable anywhere.
+ * @type {InputHandler | null}
+ */
+let _instance = null;
+
 export class InputHandler {
-  /**
-   * @param {HTMLCanvasElement} canvas
-   */
-  constructor(canvas) {
+  constructor() {
     this.keys = [];
 
     /**
@@ -50,7 +53,7 @@ export class InputHandler {
     window.addEventListener('keydown', (e) => {
       if (ALLOWED_KEYS.includes(e.key)) {
         e.preventDefault(); // stop arrow keys from scrolling the page
-        if (this.keys.indexOf(e.key) === -1) this.keys.push(e.key);
+        if (!e.repeat && this.keys.indexOf(e.key) === -1) this.keys.push(e.key);
       }
     });
 
@@ -59,11 +62,6 @@ export class InputHandler {
         this.keys.splice(this.keys.indexOf(e.key), 1);
       }
     });
-
-    // Clear all held keys when the canvas loses focus so inputs don't get stuck
-    canvas.addEventListener('blur', () => {
-      this.keys = [];
-    });
   }
 
   /** Removes a key immediately — forces the user to release and re-press to trigger again. */
@@ -71,4 +69,16 @@ export class InputHandler {
     const idx = this.keys.indexOf(key);
     if (idx !== -1) this.keys.splice(idx, 1);
   }
+
+  static init() {
+    if (!_instance) _instance = new InputHandler();
+    return _instance;
+  }
 }
+
+/** Shared InputHandler — available after Game has been constructed. */
+export const inputHandler = {
+  get instance() {
+    return _instance;
+  },
+};

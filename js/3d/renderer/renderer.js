@@ -6,4 +6,5 @@ export const renderer = new WebGLRenderer({
   antialias: true,
 });
 // false = don't override the CSS size set by the layout
+
 renderer.setSize(renderCanvas.clientWidth, renderCanvas.clientHeight, false);

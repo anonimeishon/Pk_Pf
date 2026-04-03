@@ -28,7 +28,7 @@ export class Game {
       this.state.player.y || null,
       this.state.player.direction,
     );
-    this.input = new InputHandler(canvas);
+    this.input = InputHandler.init();
     this.fps = 30;
     this.frameInterval = 1000 / this.fps;
     this.lastTime = 0;

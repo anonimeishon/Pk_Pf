@@ -4,26 +4,31 @@ export const CONTROL_KEYS = {
   ...MOVEMENT_KEYS,
   A: 'Enter',
   B: 'b',
+  Start: 'Start',
+  Select: 'Select',
 };
 
+export const BUTTON_PRESS_DEPTH = 0.02;
+
 export const DPAD_ZONE = {
-  minX: 0.125,
-  maxX: 0.305,
-  minZ: 0.12,
-  maxZ: 0.3,
-  centerX: 0.215,
-  centerZ: 0.21,
-  deadZone: 0.02,
+  minX: 0.1,
+  maxX: 0.95,
+  minZ: 0.08,
+  maxZ: 0.9,
+  centerX: 0.55,
+  centerZ: 0.49,
+  deadZone: 0.03,
 };
 
 export const ACTION_ZONE_A = {
-  centerX: 0.863,
-  centerZ: 0.237,
+  centerX: 0.586,
+  centerZ: 0.505,
   halfSize: 0.08,
 };
 
 export const ACTION_ZONE_B = {
-  centerX: 0.683,
-  centerZ: 0.191,
-  halfSize: 0.075,
+  centerX: 0.569,
+  centerZ: 0.464,
+  halfSize: 0.08,
 };
+export const DPAD_ROTATION_ANGLE = Math.PI * 0.05;
