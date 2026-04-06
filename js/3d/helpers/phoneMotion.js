@@ -10,20 +10,13 @@ export const createPhoneMotion = ({ domElement }) => {
     motion.z = acceleration?.z ?? 0;
   };
 
-  const enablePhoneMotion = async () => {
+  const enablePhoneMotion = () => {
     if (isEnabled) return;
-
-    try {
-      if (typeof DeviceMotionEvent?.requestPermission === 'function') {
-        const permission = await DeviceMotionEvent.requestPermission();
-        if (permission !== 'granted') return;
-      }
-
-      window.addEventListener('devicemotion', phoneMotionHandler);
-      isEnabled = true;
-    } catch {
-      // Permission denied or API unavailable — motion stays zeroed, nothing breaks.
-    }
+    // Permission is requested separately (from a user-gesture context) in index.js.
+    // Here we just register the listener; on iOS, events start flowing once
+    // DeviceMotionEvent.requestPermission() has been granted by the caller.
+    window.addEventListener('devicemotion', phoneMotionHandler);
+    isEnabled = true;
   };
 
   const disablePhoneMotion = () => {

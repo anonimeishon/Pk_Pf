@@ -28,14 +28,22 @@ window.onload = () => {
 };
 
 const requestPermissions = async () => {
-  await unlockAudio();
-
-  if (
+  // iOS Safari: requestPermission MUST be called synchronously within the user
+  // gesture handler — any await before it breaks the activation context and the
+  // prompt will never appear. Start the request now, await the result later.
+  const motionPermissionPromise =
     typeof DeviceMotionEvent !== 'undefined' &&
     typeof DeviceMotionEvent.requestPermission === 'function'
-  ) {
+      ? DeviceMotionEvent.requestPermission()
+      : null;
+
+  await unlockAudio();
+
+  if (motionPermissionPromise) {
     try {
-      await DeviceMotionEvent.requestPermission();
+      await motionPermissionPromise;
+      // Once granted, iOS delivers devicemotion events to the listener that
+      // phoneMotionController registered at init time — no re-registration needed.
     } catch (error) {}
   }
 
