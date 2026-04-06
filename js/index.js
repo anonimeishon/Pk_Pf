@@ -4,6 +4,11 @@ import { loadingManager } from './utils/loadingManager.js';
 
 let startScreenElement = null;
 
+// Module promises kicked off at window.onload so asset loading begins immediately.
+// requestPermissions awaits these — by then the assets may already be ready.
+let _gameEnginePromise = null;
+let _3dGamePromise = null;
+
 window.onload = () => {
   startScreenElement = document.getElementById('startScreen');
   loadingManager.init(
@@ -14,7 +19,12 @@ window.onload = () => {
     document.getElementById('loadingText'),
   );
 
+  // Start loading all assets immediately — no user interaction required.
+  // The dynamic imports trigger top-level awaits in the module graph
+  // (tileset, trainer sprite) so images load in parallel with the GLTF model.
   gltfModelLoader.instance.loadModel('gameboy');
+  _gameEnginePromise = import('./startGameEngine.js');
+  _3dGamePromise = import('./3d/index.js');
 };
 
 const requestPermissions = async () => {
@@ -25,20 +35,15 @@ const requestPermissions = async () => {
     typeof DeviceMotionEvent.requestPermission === 'function'
   ) {
     try {
-      const response = await DeviceMotionEvent.requestPermission();
-
-      if (response === 'granted') {
-        window.resetCamera = resetCamera;
-        window.setGameCamera = setGameCamera;
-      }
+      await DeviceMotionEvent.requestPermission();
     } catch (error) {}
   }
 
-  // Start the game immediately so it renders underneath the closing animation.
-  const { startGameEngine } = await import('./startGameEngine.js');
+  // Await the pre-loaded modules. If assets finished loading before the user
+  // clicked start, these resolve instantly; otherwise they wait for the remainder.
+  const { startGameEngine } = await _gameEnginePromise;
   startGameEngine(mainCanvas);
-  const { start3DGame } = await import('./3d/index.js');
-
+  const { start3DGame } = await _3dGamePromise;
   start3DGame({ renderCanvas });
 
   startScreenElement.classList.add('start-screen-closing');

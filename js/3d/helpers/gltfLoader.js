@@ -38,22 +38,12 @@ export class GltfModelLoader {
   }
 
   loadModel(modelName) {
-    console.log(
-      '🚀 ~ gltfLoader.js:42 ~ GltfModelLoader ~ loadModel ~ modelName:',
-      modelName,
-    );
-
     if (this.loadingPromises[modelName]) {
       return this.loadingPromises[modelName];
     }
     const onProgress = loadingManager.register(modelName);
     const promise = new Promise((resolve, reject) => {
       const modelPath = this.unloadedModels[modelName];
-
-      console.log(
-        '🚀 ~ gltfLoader.js:54 ~ GltfModelLoader ~ loadModel ~ modelPath:',
-        modelPath,
-      );
 
       if (!modelPath) {
         reject(new Error(`Model "${modelName}" not found in unloaded models.`));
