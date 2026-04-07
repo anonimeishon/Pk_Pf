@@ -14,7 +14,6 @@ import {
   MAP_MAIN_TOWN,
   MAP_MAIN_TOWN_SOLID_TILE_IDS,
   MAP_MAIN_TOWN_TILE_SIZE,
-  MAP_MAIN_TOWN_TILES_PER_SHEET_ROW,
 } from './constants.js';
 
 await sharedLoader.loadImage(
@@ -27,14 +26,21 @@ await sharedLoader.loadImage(
  */
 export class TownMap extends TileMap {
   constructor() {
+    const tilesetImage = sharedLoader.get('tileset');
     super(
       MAP_MAIN_TOWN,
       MAP_MAIN_TOWN_SOLID_TILE_IDS,
       SCALED_TILE_SIZE,
       TILE_SCALING_AMOUNT,
-      MAP_MAIN_TOWN_TILES_PER_SHEET_ROW,
-      MAP_MAIN_TOWN_TILE_SIZE,
-      sharedLoader.get('tileset'),
+      {
+        tileset: {
+          image: tilesetImage,
+          width: tilesetImage.naturalWidth,
+          height: tilesetImage.naturalHeight,
+          tileSize: MAP_MAIN_TOWN_TILE_SIZE,
+        },
+      },
+      'tileset',
       new Portal([
         {
           targetMap: 'mainRoom',
