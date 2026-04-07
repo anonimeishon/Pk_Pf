@@ -141,8 +141,8 @@ body {
 
 .camera-orbit-button {
   position: relative;
-  width: 65px;
-  height: 65px;
+  width: 50px;
+  height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -150,6 +150,18 @@ body {
   border: none;
   padding: 0;
   cursor: pointer;
+}
+#rectFill {
+  transform-origin: center;
+  transform-box: fill-box; /* Crucial for SVG centering */
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none; /* Don't block clicks */
+  transform: scale(1);
+}
+
+/* State when the button is active */
+.is-active #rectFill {
+  transform: scale(0); /* Start hidden */
 }
 
 .camera-orbit-svg {
@@ -164,10 +176,17 @@ body {
 
 .camera-orbit-image {
   position: absolute;
-  top: 16px;
-  left: 16px;
+  /* Use 50% and negative margins or translate for perfect centering */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: filter 0.3s ease; /* Smooth color transition */
+  pointer-events: none;
+  filter: invert(1);
 }
-
+.is-active .camera-orbit-image {
+  filter: invert(0);
+}
 /* Desktop: hide d-pad */
 .info {
   position: absolute;

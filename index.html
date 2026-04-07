@@ -51,7 +51,7 @@
       <!-- <canvas id="debug-canvas" width="437" height="1240"></canvas> -->
       <div class="camera-controls invert">
         <button
-          id="cameraOrbitButton"
+          id="cameraSwitchButton"
           type="button"
           class="camera-orbit-button"
           onclick="switchCameraMode()"
@@ -59,28 +59,36 @@
           <svg
             id="cameraOrbitSvg"
             class="camera-orbit-svg"
-            width="65"
-            height="65"
+            width="50"
+            height="50"
             viewBox="0 0 250 250"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
           >
-            <circle
-              id="circle"
-              cx="125"
-              cy="125"
-              r="100"
-              stroke="black"
-              stroke-width="5px"
-              fill="none"
-            ></circle>
-            <path
-              id="cameraOrbitArrow"
-              class="camera-orbit-arrow"
+            <!-- Set to match viewBox (250x250) -->
+            <rect
+              id="rectFill"
+              x="0"
+              y="0"
+              width="250"
+              height="250"
               fill="black"
-              d="M 210 115 L 240 115 L 224 145 Z"
-            />
+              rx="4"
+              ry="4"
+            ></rect>
+
+            <rect
+              id="rectBorder"
+              x="0"
+              y="0"
+              width="250"
+              height="250"
+              stroke="black"
+              stroke-width="10px"
+              fill="none"
+              rx="4"
+              ry="4"
+            ></rect>
           </svg>
+
           <img
             class="camera-orbit-image"
             width="34"
