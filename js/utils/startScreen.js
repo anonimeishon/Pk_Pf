@@ -4,6 +4,7 @@ export const closeStartScreen = (startScreenElement) => {
   }
 
   startScreenElement.classList.add('start-screen-closing');
+  window.switchCameraMode();
   startScreenElement.addEventListener(
     'animationend',
     () => {
