@@ -76,7 +76,7 @@ export class MainRoomMap extends TileMap {
             { x: TRAINER_SPRITE_SIZE * 2, y: TRAINER_SPRITE_SIZE * 0 },
           ],
           action: 'dialog',
-          dialog: '"Experiences Room"',
+          dialog: '"Trophy Room"',
         }),
       ],
     );
