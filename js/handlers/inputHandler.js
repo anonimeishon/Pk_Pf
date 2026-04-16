@@ -6,6 +6,7 @@ const ALLOWED_KEYS = [
   'Enter',
   'p',
   'Start',
+  'Escape',
 ];
 
 /**
@@ -17,18 +18,6 @@ let _instance = null;
 export class InputHandler {
   constructor() {
     this.keys = [];
-
-    /**
-     * @type {{ ArrowUp: HTMLDivElement, ArrowDown: HTMLDivElement, ArrowLeft: HTMLDivElement, ArrowRight: HTMLDivElement, A: HTMLDivElement, B: HTMLDivElement }}
-     */
-    this.virtualKeys = {
-      ArrowUp: arrowKeyUp,
-      ArrowDown: arrowKeyDown,
-      ArrowLeft: arrowKeyLeft,
-      ArrowRight: arrowKeyRight,
-      A: controlKeyA,
-      B: controlKeyB,
-    };
 
     window.addEventListener('keydown', (e) => {
       if (ALLOWED_KEYS.includes(e.key) && !e.repeat) {

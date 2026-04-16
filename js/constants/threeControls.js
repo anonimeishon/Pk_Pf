@@ -3,9 +3,9 @@ import { MOVEMENT_KEYS } from './movement.js';
 export const CONTROL_KEYS = {
   ...MOVEMENT_KEYS,
   A: 'Enter',
-  B: 'b',
-  Start: 'Start',
-  Select: 'Select',
+  B: 'Escape',
+  Start: 'p',
+  Select: 'Escape ', // we'll treat Select as another way to close the menu
 };
 
 export const BUTTON_PRESS_DEPTH = 0.02;

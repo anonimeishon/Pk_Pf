@@ -6,8 +6,14 @@ import { Player } from './player.js';
 import { maps } from '../maps/index.js';
 import { State } from './state.js';
 import { Menu } from './menu.js';
+import { EventTrigger } from './eventTrigger.js';
 
 export class Game {
+  /**
+   * @type {Object.<string, EventTrigger>}
+   */
+  globalEventTriggers = {};
+
   /**
    * @param {number} width
    * @param {number} height
@@ -29,9 +35,22 @@ export class Game {
       this.state.player.y || null,
       this.state.player.direction,
     );
+
+    this.globalEventTriggers.showCredits = new EventTrigger({
+      name: 'credits',
+      positions: [], // not used since we'll trigger this manually from the menu
+      action: 'dialog',
+
+      dialog: '"Game Boy Color" by Wikiti (Sketchfab, CC BY 4.0)',
+    });
     this.input = InputHandler.init();
     this.menu = new Menu([
       { label: 'CAMERA', action: () => window.switchCameraMode?.() },
+      {
+        label: 'CREDIT',
+        action: () =>
+          (this.state.activeEvent = this.globalEventTriggers.showCredits),
+      },
     ]);
     this.fps = 30;
     this.frameInterval = 1000 / this.fps;
@@ -101,9 +120,9 @@ export class Game {
     this.player.draw(context);
     if (this.state.transition)
       this.map.portal.drawTransition(context, this.width, this.height, this);
+    this.menu.draw(context, this);
     if (this.state.activeEvent)
       this.state.activeEvent.dialog.draw(context, this);
-    this.menu.draw(context, this);
   }
   animate(context, timeStamp = 0) {
     const deltaTime = timeStamp - this.lastTime;

@@ -40,7 +40,9 @@ export class Menu {
   close(game) {
     this.isOpen = false;
     game.input.consumeKey('p');
+    game.input.consumeKey('Escape');
     game.input.consumeKey('Start');
+    game.input.consumeKey('B');
   }
 
   /** @param {import('./game.js').Game} game */
@@ -64,6 +66,10 @@ export class Menu {
     if (game.input.keys.includes('Enter')) {
       game.input.consumeKey('Enter');
       this._items[this._cursor].action(game);
+    }
+    if (game.input.keys.includes('Escape')) {
+      game.input.consumeKey('Escape');
+      this.close(game);
     }
 
     // p or Start closes the menu

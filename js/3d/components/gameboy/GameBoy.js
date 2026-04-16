@@ -116,8 +116,8 @@ export class GameBoy {
     if (isDpad) this._touchingDpad = true;
     if (key === CONTROL_KEYS.A) this._touchingA = true;
     this._aButtonTargetY = this._aButtonRestY + BUTTON_PRESS_DEPTH;
-    if (key === CONTROL_KEYS.B)
-      this._bButtonTargetY = this._bButtonRestY + BUTTON_PRESS_DEPTH;
+    if (key === CONTROL_KEYS.B) this._touchingB = true;
+    this._bButtonTargetY = this._bButtonRestY + BUTTON_PRESS_DEPTH;
   }
 
   /**
@@ -141,7 +141,10 @@ export class GameBoy {
       this._touchingA = false;
       this._aButtonTargetY = this._aButtonRestY;
     }
-    if (key === CONTROL_KEYS.B) this._bButtonTargetY = this._bButtonRestY;
+    if (key === CONTROL_KEYS.B) {
+      this._touchingB = false;
+      this._bButtonTargetY = this._bButtonRestY;
+    }
   }
 
   // -----------------------------------------------------------------------
@@ -423,6 +426,11 @@ export class GameBoy {
         this._aPressAnimRemainingMs > 0
           ? this._aButtonRestY + BUTTON_PRESS_DEPTH
           : this._aButtonRestY;
+    }
+    if (!this._touchingB) {
+      this._bButtonTargetY = keys.includes(CONTROL_KEYS.B)
+        ? this._bButtonRestY + BUTTON_PRESS_DEPTH
+        : this._bButtonRestY;
     }
   }
 }
