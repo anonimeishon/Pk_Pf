@@ -6,9 +6,8 @@ export const createModelCredits = () =>
     size: 0.035,
     color: 0xffffff,
     arc: {
-      center: { x: 0, y: 0.35, z: 0.12 },
-      radius: 1.3,
-      tilt: 5,
+      center: { x: 0, y: 1.08, z: 0.12 },
+      radius: 2,
+      tilt: 0,
     },
   });
-
