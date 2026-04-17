@@ -27,16 +27,9 @@ body {
   overflow: hidden;
   overscroll-behavior: none;
 }
-@property --iris-r {
-  syntax: '<percentage>';
-  inherits: false;
-  initial-value: 0%;
-}
-
 @keyframes iris-open {
-  to {
-    --iris-r: 150%;
-  }
+  from { clip-path: circle(150% at center); }
+  to   { clip-path: circle(0%   at center); }
 }
 .pkfnt {
   font-family: 'Pokemon', sans-serif;
@@ -57,16 +50,6 @@ body {
 
 .start-screen-closing {
   animation: iris-open 0.55s cubic-bezier(0.4, 0, 0.6, 1) forwards;
-  -webkit-mask-image: radial-gradient(
-    circle at center,
-    transparent var(--iris-r),
-    black var(--iris-r)
-  );
-  mask-image: radial-gradient(
-    circle at center,
-    transparent var(--iris-r),
-    black var(--iris-r)
-  );
   pointer-events: none;
 }
 .start-screen-content {

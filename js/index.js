@@ -4,31 +4,25 @@ import { preloadGames, startGames } from './utils/gameBootstrap.js';
 import { loadingManager } from './utils/loadingManager.js';
 import { closeStartScreen } from './utils/startScreen.js';
 
-let startScreenElement = null;
-let mainCanvasElement = null;
-let renderCanvasElement = null;
-
-// Module promises kicked off at window.onload so asset loading begins immediately.
-// requestPermissions awaits these — by then the assets may already be ready.
+let _startScreenElement = null;
+let _mainCanvasElement = null;
+let _renderCanvasElement = null;
 let _preloadedGames = null;
 
 window.onload = () => {
-  startScreenElement = document.getElementById('startScreen');
-  mainCanvasElement = document.getElementById('mainCanvas');
-  renderCanvasElement = document.getElementById('renderCanvas');
+  _startScreenElement = document.getElementById('startScreen');
+  _mainCanvasElement = document.getElementById('mainCanvas');
+  _renderCanvasElement = document.getElementById('renderCanvas');
 
   setupCameraSwitchButton();
   loadingManager.init(
-    startScreenElement,
+    _startScreenElement,
     document.getElementById('loadingBarContainer'),
     document.getElementById('loadingBar'),
     document.getElementById('startBtn'),
     document.getElementById('loadingText'),
   );
 
-  // Start loading all assets immediately — no user interaction required.
-  // The dynamic imports trigger top-level awaits in the module graph
-  // (tileset, trainer sprite) so images load in parallel with the GLTF model.
   _preloadedGames = preloadGames();
 };
 
@@ -59,11 +53,11 @@ const requestPermissions = async () => {
   }
 
   await startGames(_preloadedGames, {
-    mainCanvas: mainCanvasElement,
-    renderCanvas: renderCanvasElement,
+    mainCanvas: _mainCanvasElement,
+    renderCanvas: _renderCanvasElement,
   });
 
-  closeStartScreen(startScreenElement);
+  closeStartScreen(_startScreenElement);
 };
 
 window.requestPermissions = requestPermissions;
