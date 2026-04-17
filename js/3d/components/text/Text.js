@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { SceneObject } from '../SceneObject.js';
 
 /**
- * @typedef {{text: string, size?: number, color?: number, borderColor?: number, pokemonBorder?: boolean, mediaQuery?: string, anchor?: import('../SceneObject.js').AnchorOptions, position?: {x: number, y: number, z: number}}} TextOptions
+ * @typedef {{text: string, size?: number, color?: number, borderColor?: number,variateMovement?: boolean, movementVariationX?: number, movementVariationY?: number, mediaQuery?: string, anchor?: import('../SceneObject.js').AnchorOptions, position?: {x: number, y: number, z: number}}} TextOptions
  */
 export class Text extends SceneObject {
   text = '';
@@ -13,7 +13,10 @@ export class Text extends SceneObject {
   position = new THREE.Vector3(0, 0, 0);
   material = null;
   mesh = null;
-
+  movementVariationX = Math.random() * 1000; // for subtle desynchronized bobbing
+  movementVariationY = Math.random() * 1000; // for subtle desynchronized bobbing
+  variateMovement = false;
+  _startPosition = this.position.clone();
   /**
    * @param {TextOptions} options
    */
@@ -25,11 +28,20 @@ export class Text extends SceneObject {
     position,
     anchor,
     mediaQuery,
+    variateMovement,
+    movementVariationX,
+    movementVariationY,
   }) {
     super({ anchor, mediaQuery });
     this.text = text;
-    if (position)
+    if (position) {
       this.position = new THREE.Vector3(position.x, position.y, position.z);
+      this._startPosition = this.position.clone();
+    }
+    this.variateMovement = variateMovement ?? this.variateMovement;
+    this.movementVariationX = movementVariationX ?? this.movementVariationX;
+    this.movementVariationY = movementVariationY ?? this.movementVariationY;
+
     this.size = size ?? this.size;
     this.color = color ?? this.color;
     this.borderColor = borderColor ?? this.borderColor;
@@ -95,5 +107,20 @@ export class Text extends SceneObject {
 
   draw() {
     if (this.mesh) scene.add(this.mesh);
+  }
+  onFrame() {
+    if (this.variateMovement) {
+      this.position.x =
+        this._startPosition.x +
+        Math.sin((Date.now() + this.movementVariationX) / 300) * 0.02;
+      this.position.y =
+        this._startPosition.y +
+        Math.sin((Date.now() + this.movementVariationY) / 300) * 0.02;
+      if (this.mesh) this.mesh.position.copy(this.position);
+    }
+
+    // this.position.x = this._startPosition.x + Math.sin(Date.now() / 200) * 0.02;
+    // this.position.y = this._startPosition.y + Math.sin(Date.now() / 200) * 0.02;
+    // if (this.mesh) this.mesh.position.copy(this.position);
   }
 }

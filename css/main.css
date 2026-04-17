@@ -28,8 +28,12 @@ body {
   overscroll-behavior: none;
 }
 @keyframes iris-open {
-  from { clip-path: circle(150% at center); }
-  to   { clip-path: circle(0%   at center); }
+  from {
+    clip-path: circle(150% at center);
+  }
+  to {
+    clip-path: circle(0% at center);
+  }
 }
 .pkfnt {
   font-family: 'Pokemon', sans-serif;
