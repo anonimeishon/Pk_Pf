@@ -41,8 +41,10 @@ export class Game {
       positions: [], // not used since we'll trigger this manually from the menu
       action: 'dialog',
 
-      dialog: '"Game Boy Color" by Wikiti (Sketchfab, CC BY 4.0)',
+      dialog:
+        '"Game Boy Color" by Wikiti (Sketchfab, CC BY 4.0)\nSFX created with ChipTone (SFB Games)\n\nFont: “pokemon-font” by cooljeanius (OFL 1.1) \nhttps://github.com/\ncooljeanius/\npokemon-font',
     });
+
     this.input = InputHandler.init();
     this.menu = new Menu([
       { label: 'CAMERA', action: () => window.switchCameraMode?.() },

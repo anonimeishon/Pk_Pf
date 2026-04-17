@@ -1,5 +1,4 @@
 .main-canvas {
-  border: solid black 1px;
   max-width: 100%;
   height: auto;
   width: 100svw;
@@ -17,4 +16,13 @@
 .game-container {
   visibility: hidden;
   display: none;
+}
+
+.game-canvas {
+  max-width: 100%;
+  height: auto;
+  width: 480px;
+  height: 432px;
+  touch-action: auto !important;
+  position: relative;
 }

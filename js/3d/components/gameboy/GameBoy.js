@@ -187,6 +187,37 @@ export class GameBoy {
     material.needsUpdate = true;
   }
 
+  setScreenOnFrame = (targetPosition, targetScale) => {
+    return {
+      planePosition: {
+        x: targetPosition.position.x + 0.035,
+        y: targetPosition.position.y - 0.4,
+        z: targetPosition.position.z + 0.3,
+      },
+      planeScale: {
+        x: targetScale.x + 0.2,
+        y: targetScale.y,
+        z: targetScale.z + 0.1,
+      },
+      childVisible: false,
+    };
+  };
+
+  setScreenInFrame = (targetPosition, targetScale) => {
+    return {
+      planePosition: {
+        x: targetPosition.x + 0.04,
+        y: targetPosition.y - 0.41,
+        z: targetPosition.z + 0.345,
+      },
+      planeScale: {
+        x: targetScale.x - 0.15,
+        y: targetScale.y + 0.1,
+        z: targetScale.z - 0.25,
+      },
+      childVisible: true,
+    };
+  };
   /** Overlay a clean PlaneGeometry carrying the dot-matrix canvas texture. */
   _setupScreen(child) {
     const screenParent = child.parent;
@@ -209,33 +240,16 @@ export class GameBoy {
      * which means there will be more space for the canvas texture
      */
 
-    // child.visible = false;
+    const { planePosition, planeScale, childVisible } = this.setScreenInFrame(
+      child.position,
+      child.scale,
+    );
 
-    //  plane.position.copy({
-    //   x: child.position.x + 0.035,
-    //   y: child.position.y - 0.4,
-    //   z: child.position.z + 0.3,
-    // }); // slight offset to prevent z-fighting
-    // // plane.quaternion.copy(child.quaternion);
-    // geo.rotateX(Math.PI * 0.5); // orient flat in the XZ plane
-    // plane.scale.copy({
-    //   x: child.scale.x + 0.2,
-    //   y: child.scale.y,
-    //   z: child.scale.z + 0.1,
-    // });
+    plane.position.copy(planePosition);
+    plane.scale.copy(planeScale);
+    child.visible = childVisible;
 
-    plane.position.copy({
-      x: child.position.x + 0.04,
-      y: child.position.y - 0.41,
-      z: child.position.z + 0.35,
-    });
     geo.rotateX(Math.PI * 0.5);
-    plane.scale.copy({
-      x: child.scale.x - 0.18,
-      y: child.scale.y + 0.1,
-      z: child.scale.z - 0.26,
-    });
-
     screenParent.add(plane);
   }
 
