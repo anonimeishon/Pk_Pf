@@ -83,6 +83,10 @@ export class Button extends SceneObject {
 
   _baseY = 1.1;
   _elapsedTime = 0;
+  _isHovered = false;
+  _spinAccum = 0;
+  _spinStep = Math.PI / 8; // rotation per tick
+  _spinInterval = 0.05; // seconds between ticks
   _labelType = 'text';
   _labelText = 'START';
   _iconPath = `${ASSETS_BASE}/icons/camera.svg`;
@@ -258,14 +262,18 @@ export class Button extends SceneObject {
     });
   }
 
+  onHoverStart() {
+    this._isHovered = true;
+    document.body.style.cursor = 'pointer';
+  }
+
+  onHoverEnd() {
+    this._isHovered = false;
+    document.body.style.cursor = '';
+  }
+
   hit(e) {
     window.switchCameraMode?.();
-    for (let i = 0; i < 16; i++) {
-      setTimeout(() => {
-        this.mesh.rotation.x += Math.PI / 8;
-        // this.mesh.rotation.y += Math.PI / 8;
-      }, i * 50);
-    }
   }
   resolveKey() {
     return;
@@ -273,7 +281,16 @@ export class Button extends SceneObject {
   onFrame(deltaSeconds) {
     this._elapsedTime += deltaSeconds;
     super.onFrame(deltaSeconds);
-    this._baseY = this.mesh.position.y;
-    // this.mesh.position.y = this._baseY + Math.sin(this._elapsedTime * 2) * 0.01;
+    if (this._isHovered) {
+      this._spinAccum += deltaSeconds;
+      while (this._spinAccum >= this._spinInterval) {
+        this._spinAccum -= this._spinInterval;
+        this.mesh.rotation.x += this._spinStep;
+      }
+      // this.mesh.position.y = this._baseY + Math.sin(this._elapsedTime * 4) * 0.03;
+    } else {
+      this._spinAccum = 0;
+      //   this.mesh.position.y += (this._baseY - this.mesh.position.y) * 0.15;
+    }
   }
 }

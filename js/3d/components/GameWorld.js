@@ -113,21 +113,22 @@ export class World {
     );
   }
 
+  _hoveredEntity = null;
+
   _updatePointer(event) {
     const rect = renderer.domElement.getBoundingClientRect();
     this._pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
     this._pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
   }
-
+  _onMouseMove = (event) => {
+    this._updatePointer(event);
+  };
   _getHit(event) {
     if (!this._meshToEntity.size) return null;
     this._updatePointer(event);
     this._raycaster.setFromCamera(this._pointer, camera);
     const meshes = [...this._meshToEntity.keys()];
     const hits = this._raycaster.intersectObjects(meshes, true);
-
-    console.log('🚀 ~ GameWorld.js:129 ~ World ~ _getHit ~ hits:', hits);
-
     return hits[0] ?? null;
   }
 
@@ -165,6 +166,10 @@ export class World {
     renderer.domElement.addEventListener('pointerdown', this._onPointerDown, {
       passive: false,
     });
+    renderer.domElement.addEventListener('mousemove', this._onMouseMove, {
+      passive: false,
+    });
+
     window.addEventListener('pointerup', this._onPointerUp, { passive: false });
     window.addEventListener('pointercancel', this._onPointerUp, {
       passive: false,
@@ -222,6 +227,19 @@ export class World {
 
     controls.update();
     updateParticles(camera.position);
+
+    if (this._meshToEntity.size) {
+      this._raycaster.setFromCamera(this._pointer, camera);
+      const meshes = [...this._meshToEntity.keys()];
+      const hit = this._raycaster.intersectObjects(meshes, true)[0] ?? null;
+      const entity = hit ? this._meshToEntity.get(hit.object) : null;
+      if (entity !== this._hoveredEntity) {
+        this._hoveredEntity?.onHoverEnd?.();
+        entity?.onHoverStart?.();
+        this._hoveredEntity = entity;
+      }
+    }
+
     composer.render();
   };
 
