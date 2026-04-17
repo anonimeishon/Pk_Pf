@@ -17,10 +17,7 @@ const directions = {
   ArrowRight: { dx: TRAINER_MOVE_STEP, dy: 0, dir: 'right' },
 };
 
-await sharedLoader.loadImage(
-  'trainer',
-  `${ASSETS_BASE}sprites/pokemon_gen_1_trainer_sprite_long_hair_final.png`,
-);
+await sharedLoader.loadImage('trainer', `${ASSETS_BASE}sprites/player.png`);
 
 const debugScale = 4;
 export class Player {

@@ -37,8 +37,6 @@ export const animateCamera = ({
 
       cameraTarget.copy(toTarget);
 
-      console.log('🚀 ~ animateCamera.js:40 ~ step ~ toTarget:', toTarget);
-
       controls.target.copy(toTarget);
 
       controls.enableDamping = prevDamping;

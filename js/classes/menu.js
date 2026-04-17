@@ -52,28 +52,35 @@ export class Menu {
     // Dialog has priority — hands off when a dialog is active
     if (game.state.activeEvent) return;
 
+    const sfx = game.player.sfxPlayer;
+
     if (game.input.keys.includes('ArrowUp')) {
       game.input.consumeKey('ArrowUp');
+      sfx.play('menuMove');
       this._cursor =
         (this._cursor - 1 + this._items.length) % this._items.length;
     }
 
     if (game.input.keys.includes('ArrowDown')) {
       game.input.consumeKey('ArrowDown');
+      sfx.play('menuMove');
       this._cursor = (this._cursor + 1) % this._items.length;
     }
 
     if (game.input.keys.includes('Enter')) {
       game.input.consumeKey('Enter');
+      sfx.play('confirm');
       this._items[this._cursor].action(game);
     }
     if (game.input.keys.includes('Escape')) {
       game.input.consumeKey('Escape');
+      sfx.play('cancel');
       this.close(game);
     }
 
     // p or Start closes the menu
     if (game.input.keys.includes('p') || game.input.keys.includes('Start')) {
+      sfx.play('cancel');
       this.close(game);
     }
   }
