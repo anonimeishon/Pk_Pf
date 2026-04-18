@@ -43,14 +43,14 @@ export class MainRoomMap extends TileMap {
       },
       RBY_TILESET_NAME,
       new Portal([
-        {
-          targetMap: 'town',
-          targetX: TRAINER_SPRITE_SIZE * 9,
-          targetY: TRAINER_SPRITE_SIZE * 1,
-          x: TRAINER_SPRITE_SIZE * 6,
+        // {
+        //   targetMap: 'town',
+        //   targetX: TRAINER_SPRITE_SIZE * 9,
+        //   targetY: TRAINER_SPRITE_SIZE * 1,
+        //   x: TRAINER_SPRITE_SIZE * 6,
 
-          y: TRAINER_SPRITE_SIZE,
-        },
+        //   y: TRAINER_SPRITE_SIZE,
+        // },
         {
           targetMap: 'experiences',
           targetX: TRAINER_SPRITE_SIZE * 1,
