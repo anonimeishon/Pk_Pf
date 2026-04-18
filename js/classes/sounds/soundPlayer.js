@@ -18,6 +18,7 @@ export const unlockAudio = async () => {
  * @typedef {Object.<string, SoundEntry>} SoundMap
  */
 export class SoundPlayer {
+  muted = false;
   constructor() {
     /** @type {SoundMap} */
     this.sounds = {};
@@ -43,6 +44,11 @@ export class SoundPlayer {
     window.addEventListener('keydown', unlock);
     window.addEventListener('pointerdown', unlock);
   }
+
+  toggleMute() {
+    this.muted = !this.muted;
+  }
+
   /**
    * @param {string} name - name of the sound to load, must be the same name as the file, no extension.
    */
@@ -59,6 +65,7 @@ export class SoundPlayer {
    * 'bump' for 'bump.mp3'
    */
   play(sound) {
+    if (this.muted) return;
     if (this.isPlaying) return;
     if (this.sounds[sound]) {
       this.sounds[sound].audio.currentTime = 0; // Rewind to start

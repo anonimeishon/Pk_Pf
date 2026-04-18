@@ -1,5 +1,4 @@
 import { SoundPlayer } from './soundPlayer.js';
-
 import { ASSETS_BASE } from '../../constants/assets.js';
 
 const SOUNDS_PATH = `${ASSETS_BASE}sounds`;
@@ -12,8 +11,29 @@ const SOUNDS = {
 };
 
 export class SfxPlayer extends SoundPlayer {
+  _muted = false;
+
   constructor() {
     super();
     this.sounds = SOUNDS;
   }
+
+  mute() {
+    this._muted = true;
+  }
+
+  unmute() {
+    this._muted = false;
+  }
+
+  get isMuted() {
+    return this._muted;
+  }
+
+  play(sound) {
+    if (this._muted) return;
+    super.play(sound);
+  }
 }
+
+export const sfxPlayer = new SfxPlayer();

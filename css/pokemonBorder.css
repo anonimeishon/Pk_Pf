@@ -7,6 +7,7 @@
 
 .pkbd {
   contain: layout style;
+  margin: 6px;
   color: #000000;
   font-family: Pokemon;
   position: relative;
@@ -41,15 +42,31 @@
   left: -4px;
   right: -4px;
   bottom: -4px;
-  border: 2px solid var(--border-background-color);
-
-  /* 2. Force it to sit on top of everything */
-  z-index: 10;
 
   /* Prevent this invisible box from blocking mouse clicks */
   pointer-events: none;
 
   background-image:
+    linear-gradient(
+      to right,
+      var(--border-background-color),
+      var(--border-background-color)
+    ),
+    linear-gradient(
+      to right,
+      var(--border-background-color),
+      var(--border-background-color)
+    ),
+    linear-gradient(
+      to bottom,
+      var(--border-background-color),
+      var(--border-background-color)
+    ),
+    linear-gradient(
+      to bottom,
+      var(--border-background-color),
+      var(--border-background-color)
+    ),
     linear-gradient(
       var(--border-background-color),
       var(--border-background-color)
@@ -69,13 +86,28 @@
 
   /* Pin them to the extreme corners of this new stretched box */
   background-position:
+    /* Top border */
     0px 2px,
-    /* Top Right */ 0px 100%,
-    /* Bottom Left */ 100% 100%,
-    100% 2px; /* Bottom Right */
+    /* bottom border */ 0px 100%,
+    /* left border */ 0px 2px,
+    /* right border */ 100% 2px,
+    2px 4px,
+    calc(100% - 2px) 4px,
+    2px calc(100% - 2px),
+    calc(100% - 2px) calc(100% - 2px);
 
-  background-size: 2px 2px;
+  background-size:
+    100% 2px,
+    100% 2px,
+    2px 100%,
+    2px 100%,
+    2px 2px,
+    2px 2px,
+    2px 2px,
+    2px 2px;
+
   background-repeat: no-repeat;
+  /* Top border 0 100%, */
 }
 
 /* Outer gray layer */
@@ -97,59 +129,8 @@
     linear-gradient(var(--border-color), var(--border-color)),
     linear-gradient(var(--border-color), var(--border-color)),
     linear-gradient(var(--border-color), var(--border-color)),
-    /* top left start*/
-    linear-gradient(
-        var(--border-background-color),
-        var(--border-background-color)
-      ),
-    linear-gradient(
-      var(--border-background-color),
-      var(--border-background-color)
-    ),
-    linear-gradient(
-      var(--border-background-color),
-      var(--border-background-color)
-    ),
-    /* top left end*/ /* top right start*/
-    linear-gradient(
-        var(--border-background-color),
-        var(--border-background-color)
-      ),
-    linear-gradient(
-      var(--border-background-color),
-      var(--border-background-color)
-    ),
-    linear-gradient(
-      var(--border-background-color),
-      var(--border-background-color)
-    ),
-    /* top right end*/ /* bottom left start*/
-    linear-gradient(
-        var(--border-background-color),
-        var(--border-background-color)
-      ),
-    linear-gradient(
-      var(--border-background-color),
-      var(--border-background-color)
-    ),
-    linear-gradient(
-      var(--border-background-color),
-      var(--border-background-color)
-    ),
-    /* bottom left end*/ /* bottom right start*/
-    linear-gradient(
-        var(--border-background-color),
-        var(--border-background-color)
-      ),
-    linear-gradient(
-      var(--border-background-color),
-      var(--border-background-color)
-    ),
-    linear-gradient(
-      var(--border-background-color),
-      var(--border-background-color)
-    ),
-    /* bottom right end*/ /* Border lines */
+    linear-gradient(var(--border-color), var(--border-color)),
+    linear-gradient(var(--border-color), var(--border-color)),
     linear-gradient(to right, var(--border-color), var(--border-color)),
     /* Top border */
     linear-gradient(to right, var(--border-color), var(--border-color)),
@@ -164,45 +145,25 @@
     2px 2px,
     2px 2px,
     2px 2px,
-    /* top left start*/ 2px 2px,
     2px 2px,
     2px 2px,
-    /* top left end*/ /* top right start*/ 2px 2px,
-    2px 2px,
-    2px 2px,
-    /* top right end*/ /* bottom left start*/ 2px 2px,
-    2px 2px,
-    2px 2px,
-    /* bottom left end*/ /* bottom right start*/ 2px 2px,
-    2px 2px,
-    2px 2px,
-    /* bottom right end*/ /* Border sizes */ 100% 2px,
-    /* Top border */ 100% 4px,
-    /* Bottom border (thicker) */ 2px 100%,
-    /* Left border */ 2px 100%; /* Right border */
+    /* bottom right end*/ /* TOP BORDER*/ calc(100% - 8px) 2px,
+    /* BOTTOM border */ calc(100% - 8px) 4px,
+    /* LEFT border  */ 2px calc(100% - 8px),
+    /* RIGHT border */ 2px calc(100% - 8px);
 
   background-position:
     /* Corner dots positions */
     2px 2px,
     /* Top-left */ calc(100% - 2px) 2px,
     /* Top-right */ 2px calc(100% - 4px),
+    /* Top-right */ 2px calc(100% - 2px),
     /* Bottom-left */ calc(100% - 2px) calc(100% - 4px),
-    /* Bottom-right */ /* top left start*/ 0px 0px,
-    0px 2px,
-    2px 0px,
-    /* top left end*/ /* top right start*/ 100% 0px,
-    100% 2px,
-    calc(100% - 2px) 0px,
-    /* top right end*/ /* bottom left start*/ 0px 100%,
-    2px 100%,
-    0px calc(100% - 2px),
-    /* bottom left end*/ /* bottom right start*/ 100% 100%,
-    100% calc(100% - 2px),
-    calc(100% - 2px) 100%,
-    /* bottom right end*/ /* Border positions */ 0 0,
-    /* Top border */ 0 100%,
-    /* Bottom border */ 0 0,
-    /* Left border */ 100% 0; /* Right border */
+    /* Bottom-left */ calc(100% - 2px) calc(100% - 2px),
+    /* bottom right end*/ /* Border positions */ 4px 0,
+    /* Top border */ 4px 100%,
+    /* Bottom border */ 0 4px,
+    /* Left border */ 100% 4px; /* Right border */
 
   background-repeat: no-repeat;
   /*#####*/

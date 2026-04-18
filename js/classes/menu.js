@@ -52,7 +52,7 @@ export class Menu {
     // Dialog has priority — hands off when a dialog is active
     if (game.state.activeEvent) return;
 
-    const sfx = game.player.sfxPlayer;
+    const sfx = game.sfxPlayer;
 
     if (game.input.keys.includes('ArrowUp')) {
       game.input.consumeKey('ArrowUp');

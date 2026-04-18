@@ -85,7 +85,7 @@ export class Dialog {
 
     if (game.input.keys.includes('Enter')) {
       game.input.consumeKey('Enter');
-      game.player.sfxPlayer.play('confirm');
+      game.sfxPlayer.play('confirm');
       if (this.charIndex < totalChars) {
         // Skip typewriter to end of current window
         this.charIndex = totalChars;

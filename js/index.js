@@ -1,5 +1,5 @@
 import { unlockAudio } from './classes/sounds/soundPlayer.js';
-import { setupCameraSwitchButton } from './utils/cameraSwitchButton.js';
+import { setupMenuButton } from './utils/Menubutton.js';
 import { preloadGames, startGames } from './utils/gameBootstrap.js';
 import { loadingManager } from './utils/loadingManager.js';
 import { closeStartScreen } from './utils/startScreen.js';
@@ -14,7 +14,7 @@ window.onload = () => {
   _mainCanvasElement = document.getElementById('mainCanvas');
   _renderCanvasElement = document.getElementById('renderCanvas');
 
-  setupCameraSwitchButton();
+  setupMenuButton();
   loadingManager.init(
     _startScreenElement,
     document.getElementById('loadingBarContainer'),

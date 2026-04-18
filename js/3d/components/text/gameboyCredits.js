@@ -2,7 +2,7 @@ import { CurvedText } from './CurvedText.js';
 
 export const createModelCredits = () =>
   new CurvedText({
-    text: 'Model by Wikiti on Sketchfab',
+    text: 'Press to Engage',
     size: 0.045,
     color: 0xffffff,
     arc: {

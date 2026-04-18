@@ -7,6 +7,12 @@ import { maps } from '../maps/index.js';
 import { State } from './state.js';
 import { Menu } from './menu.js';
 import { EventTrigger } from './eventTrigger.js';
+import { sfxPlayer } from './sounds/sfxPlayer.js';
+import {
+  LINK_GITHUB,
+  LINK_LINKEDIN,
+  LINK_CONTACT,
+} from '../constants/links.js';
 
 export class Game {
   /**
@@ -46,12 +52,34 @@ export class Game {
     });
 
     this.input = InputHandler.init();
+    this.sfxPlayer = sfxPlayer;
     this.menu = new Menu([
       { label: 'CAMERA', action: () => window.switchCameraMode?.() },
       {
         label: 'CREDIT',
         action: () =>
           (this.state.activeEvent = this.globalEventTriggers.showCredits),
+      },
+      {
+        label: 'MUTE',
+        action: () =>
+          this.sfxPlayer.isMuted
+            ? this.sfxPlayer.unmute()
+            : this.sfxPlayer.mute(),
+      },
+      {
+        label: 'GITHUB',
+        action: () => window.open(LINK_GITHUB, '_blank', 'noopener,noreferrer'),
+      },
+      {
+        label: 'LNKDIN',
+        action: () =>
+          window.open(LINK_LINKEDIN, '_blank', 'noopener,noreferrer'),
+      },
+      {
+        label: 'CONTCT',
+        action: () =>
+          window.open(LINK_CONTACT, '_blank', 'noopener,noreferrer'),
       },
     ]);
     this.fps = 30;

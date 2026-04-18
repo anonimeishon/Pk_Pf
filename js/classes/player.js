@@ -3,7 +3,6 @@ import {
   TRAINER_SPRITE_SIZE,
 } from '../constants/player.js';
 import { sharedLoader } from '../utils/assetLoader.js';
-import { SfxPlayer } from './sounds/sfxPlayer.js';
 import { ASSETS_BASE } from '../constants/assets.js';
 import { TRAINER_MOVE_STEP, directionDeltas } from '../constants/movement.js';
 import { STATE_BACKUP_THRESHOLD } from '../constants/state.js';
@@ -48,7 +47,6 @@ export class Player {
     this.direction = direction; // current facing direction
     this.footIndex = 0; // alternates 0/1 for walk cycle
     this.currentFrame = this.frames[direction].neutral;
-    this.sfxPlayer = new SfxPlayer();
     this.enableMovement = enableMovement;
     this._updateFacing();
   }
@@ -84,7 +82,7 @@ export class Player {
     if (
       this.game.map.isSolid(newTargetX, newTargetY, this.width, this.height)
     ) {
-      this.sfxPlayer.play('bump');
+      this.game.sfxPlayer.play('bump');
       return;
     }
 

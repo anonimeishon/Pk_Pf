@@ -184,18 +184,6 @@ body {
   align-items: flex-start;
 }
 
-.camera-controls {
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  top: 14px;
-  right: 0.5rem;
-  align-items: flex-end;
-  gap: 1rem;
-  display: none;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
 .invert {
   filter: invert(1);
   -webkit-filter: invert(1); /* Legacy Safari support */
@@ -215,9 +203,6 @@ body {
   .info {
     display: none;
   }
-  .camera-controls {
-    flex-direction: row;
-  }
 
   .sm {
     font-size: 0.7rem;
@@ -229,4 +214,165 @@ body {
 
 .hidden {
   visibility: hidden;
+}
+.display-none {
+  display: none;
+}
+
+/* === Button Bar === */
+.button-bar {
+  position: absolute;
+  top: 14px;
+  right: 0.5rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  z-index: 200;
+}
+
+.camera-switch-button.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+/* === Button Bar Buttons === */
+.camera-switch-button,
+.menu-toggle-button {
+  height: 2rem;
+  width: 2rem;
+  font-size: 0.8em;
+  padding: 0.15em 0.5em;
+  cursor: pointer;
+  opacity: 1;
+  transition:
+    opacity 0.3s ease,
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+.menu-toggle-button {
+  padding-bottom: 0.5rem;
+}
+.camera-switch-icon {
+  display: block;
+  width: 1em;
+  height: 1em;
+  object-fit: contain;
+}
+.menu-toggle-button.is-active {
+  background-color: var(--border-color);
+  color: var(--border-background-color);
+}
+
+/* === Portfolio Modal === */
+.portfolio-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 300;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  touch-action: auto;
+}
+.portfolio-modal-backdrop.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+.portfolio-modal {
+  contain: none;
+  box-sizing: border-box;
+  padding: 1.2em 1.4em;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  max-height: 90vh;
+  touch-action: auto;
+
+  max-width: 50vw;
+  width: fit-content;
+}
+.portfolio-modal > * {
+  position: relative;
+  z-index: 15;
+}
+.portfolio-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5em;
+}
+.portfolio-modal-title {
+  font-size: 0.85em;
+  font-weight: normal;
+  margin: 0;
+  line-height: 1.3;
+}
+.portfolio-modal-close {
+  flex-shrink: 0;
+  font-size: 0.85em;
+  line-height: 1;
+  padding: 0.1em 0.35em;
+  cursor: pointer;
+  padding-bottom: 0.5rem;
+}
+.portfolio-modal-bio {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7em;
+  font-size: 0.65em;
+  line-height: 1.6;
+}
+.portfolio-modal-links {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  flex-wrap: wrap;
+}
+.portfolio-link {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  font-size: 0.65em;
+  text-decoration: none;
+  color: inherit;
+}
+.portfolio-link-icon {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+.portfolio-modal-footer {
+  text-align: center;
+  font-size: 0.45em;
+  opacity: 0.6;
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  .portfolio-modal-bio {
+    font-size: 0.75em;
+  }
+  .portfolio-link {
+    font-size: 0.75em;
+    gap: 0.5rem;
+  }
+  .portfolio-modal-footer {
+    font-size: 0.55em;
+    gap: 0.5rem;
+  }
+}
+@media (max-width: 720px) {
+  .portfolio-modal {
+    max-width: 90vw;
+    padding: 1em 1.2em;
+  }
+  /* .portfolio-modal-links {
+    flex-direction: column;
+  } */
 }
